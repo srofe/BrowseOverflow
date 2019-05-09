@@ -8,5 +8,10 @@
 
 import Foundation
 
-class Topic {
+struct Topic {
+    let name: String
+
+    init(name: String) {
+        self.name = name
+    }
 }
