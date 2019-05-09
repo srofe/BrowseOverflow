@@ -10,8 +10,10 @@ import Foundation
 
 struct Topic {
     let name: String
+    let tag: String
 
-    init(name: String) {
+    init(name: String, tag: String) {
         self.name = name
+        self.tag = tag
     }
 }

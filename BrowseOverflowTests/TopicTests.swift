@@ -15,10 +15,11 @@ class TopicTests: XCTestCase {
     var sut: Topic!
 
     let sutTopicName = "iPhone"
+    let sutTag = "iphone"
 
     override func setUp() {
         super.setUp()
-        sut = Topic(name: sutTopicName)
+        sut = Topic(name: sutTopicName, tag: sutTag)
     }
 
     override func tearDown() {
@@ -32,5 +33,9 @@ class TopicTests: XCTestCase {
 
     func testTopicCanBeNamed() {
         XCTAssertEqual(sut.name, sutTopicName, "A Topic shall have a name.")
+    }
+
+    func testTopicHasATag() {
+        XCTAssertEqual(sut.tag, sutTag, "A Topic shall have a tag.")
     }
 }
