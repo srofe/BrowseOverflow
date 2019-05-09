@@ -38,4 +38,8 @@ class TopicTests: XCTestCase {
     func testTopicHasATag() {
         XCTAssertEqual(sut.tag, sutTag, "A Topic shall have a tag.")
     }
+
+    func testTopicHasArrayOfQuestions() {
+        XCTAssertEqual(sut.recentQuestions.count, 0, "A Topic shall have an array of recent questions which is initially empty.")
+    }
 }

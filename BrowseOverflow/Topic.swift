@@ -11,6 +11,7 @@ import Foundation
 struct Topic {
     let name: String
     let tag: String
+    let recentQuestions: [String] = []
 
     init(name: String, tag: String) {
         self.name = name
