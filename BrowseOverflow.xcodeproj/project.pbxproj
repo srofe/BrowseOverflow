@@ -14,6 +14,8 @@
 		F420610222840E7600D4072E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F420610122840E7600D4072E /* Assets.xcassets */; };
 		F420610522840E7600D4072E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F420610322840E7600D4072E /* LaunchScreen.storyboard */; };
 		F420611B22840E7600D4072E /* BrowseOverflowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F420611A22840E7600D4072E /* BrowseOverflowUITests.swift */; };
+		F420612B228411C100D4072E /* TopicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F420612A228411C100D4072E /* TopicTests.swift */; };
+		F420612D2284123C00D4072E /* Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F420612C2284123C00D4072E /* Topic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		F420611622840E7600D4072E /* BrowseOverflowUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrowseOverflowUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F420611A22840E7600D4072E /* BrowseOverflowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseOverflowUITests.swift; sourceTree = "<group>"; };
 		F420611C22840E7600D4072E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F420612A228411C100D4072E /* TopicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicTests.swift; sourceTree = "<group>"; };
+		F420612C2284123C00D4072E /* Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Topic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +105,7 @@
 				F420612822840FD200D4072E /* ViewControllers */,
 				F42060F822840E7500D4072E /* AppDelegate.swift */,
 				F42061292284101000D4072E /* SupportingFiles */,
+				F420612C2284123C00D4072E /* Topic.swift */,
 			);
 			path = BrowseOverflow;
 			sourceTree = "<group>";
@@ -109,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				F420611122840E7600D4072E /* Info.plist */,
+				F420612A228411C100D4072E /* TopicTests.swift */,
 			);
 			path = BrowseOverflowTests;
 			sourceTree = "<group>";
@@ -212,6 +218,7 @@
 					};
 					F420610A22840E7600D4072E = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = F42060F422840E7500D4072E;
 					};
 					F420611522840E7600D4072E = {
@@ -273,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F42060FD22840E7500D4072E /* DetailViewController.swift in Sources */,
+				F420612D2284123C00D4072E /* Topic.swift in Sources */,
 				F42060FB22840E7500D4072E /* MasterViewController.swift in Sources */,
 				F42060F922840E7500D4072E /* AppDelegate.swift in Sources */,
 			);
@@ -282,6 +290,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F420612B228411C100D4072E /* TopicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +494,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4SKJAJR837;
 				INFOPLIST_FILE = BrowseOverflowTests/Info.plist;
@@ -495,6 +505,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.poddlybonk.BrowseOverflowTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrowseOverflow.app/BrowseOverflow";
@@ -506,6 +517,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4SKJAJR837;
 				INFOPLIST_FILE = BrowseOverflowTests/Info.plist;
