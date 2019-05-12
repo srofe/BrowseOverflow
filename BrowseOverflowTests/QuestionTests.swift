@@ -19,9 +19,10 @@ class QuestionTests: XCTestCase {
         super.tearDown()
     }
 
-    func testQuestionHasADate() {
-        let date = Date()
-        let question = Question(date: date)
-        XCTAssertEqual(question.date, date, "A Question shall have a date.")
+    func testQuestionDateCanBeSet() {
+        let date = Date.distantPast
+        var question = Question()
+        question.date = date
+        XCTAssertEqual(question.date, date, "A Question shall allow its date to be set.")
     }
 }

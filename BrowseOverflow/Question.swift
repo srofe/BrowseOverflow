@@ -9,5 +9,9 @@
 import Foundation
 
 struct Question {
-    let date: Date
+    var date: Date
+
+    init(date: Date = Date()) {
+        self.date = date
+    }
 }
