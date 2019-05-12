@@ -25,4 +25,12 @@ class QuestionTests: XCTestCase {
         question.date = date
         XCTAssertEqual(question.date, date, "A Question shall allow its date to be set.")
     }
+
+    func testDefaultDateIsCurrentDate() {
+        let now = Date()
+        let question = Question()
+        let later = Date()
+        let range = now...later
+        XCTAssertTrue(range.contains(question.date), "A Question shall have a default date that is the current date.")
+    }
 }
