@@ -11,22 +11,33 @@ import XCTest
 
 class AnswerTests: XCTestCase {
 
+    // The System Under Test - an Answer
+    var sut: Answer!
+
+    let answerText = "The answer is 42"
+
     override func setUp() {
+        super.setUp()
+        sut = Answer()
     }
 
     override func tearDown() {
+        sut = nil
+        super.tearDown()
     }
 
     func testAnswerHasSomeText() {
-        var answer = Answer()
-        answer.text = "The answer is 42"
-        XCTAssertEqual(answer.text, "The answer is 42", "An Answer has some text.")
+        sut.text = answerText
+        XCTAssertEqual(sut.text, answerText, "An Answer has some text.")
     }
 
     func testSomeoneProvidedTheAnswer() {
-        var answer = Answer()
         let person = Person(name: "Simon Rofe", avatarUrl: URL(string: "http://example.com/avatar.png")!)
-        answer.person = person
-        XCTAssertNotNil(answer.person, "An Answer shall have someone who provided it.")
+        sut.person = person
+        XCTAssertNotNil(sut.person, "An Answer shall have someone who provided it.")
+    }
+
+    func testAnswerIsNotAcceptedByDefault() {
+        XCTAssertFalse(sut.accepted, "An Answer is not accepted by default.")
     }
 }
