@@ -18,9 +18,12 @@ class AnswerTests: XCTestCase {
     let answerDefaultScore = 0
     let answerScore = 42
 
+    var otherAnswer = Answer()
+
     override func setUp() {
         super.setUp()
         sut = Answer()
+        otherAnswer.text = "I have the answer you need"
     }
 
     override func tearDown() {
@@ -55,5 +58,11 @@ class AnswerTests: XCTestCase {
     func testScoreCanBeSet() {
         sut.score = answerScore
         XCTAssertEqual(sut.score, answerScore, "An Answer shall allow the score to be set.")
+    }
+
+    func testAcceptedAnswerComesBeforeUnaccepted() {
+        otherAnswer.accepted = true
+        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The accepted answer should come first.")
+        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedAscending, "The accepted answer should come first.")
     }
 }

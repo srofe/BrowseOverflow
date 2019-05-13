@@ -13,4 +13,13 @@ struct Answer {
     var person: Person = Person(name: "", avatarUrl: URL(string: "http://example.com")!)
     var accepted: Bool = false
     var score: Int = 0
+
+    func compare(with other: Answer) -> ComparisonResult {
+        if accepted && !other.accepted {
+            return .orderedAscending
+        } else if !accepted && other.accepted {
+            return .orderedDescending
+        }
+        return .orderedSame
+    }
 }
