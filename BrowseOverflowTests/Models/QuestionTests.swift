@@ -59,4 +59,10 @@ class QuestionTests: XCTestCase {
         sut.title = title
         XCTAssertEqual(sut.title, title, "A Questions shall allow it's title to be set.")
     }
+
+    func testQuestionCanAddAnswers() {
+        let answer = Answer()
+        sut.add(answer: answer)
+        XCTAssertEqual(sut.answers.count, 1, "A Questions shall allow answers to be added.")
+    }
 }
