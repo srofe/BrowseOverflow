@@ -62,14 +62,21 @@ class AnswerTests: XCTestCase {
 
     func testAcceptedAnswerComesBeforeUnaccepted() {
         otherAnswer.accepted = true
-        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The accepted answer should come first.")
-        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedAscending, "The accepted answer should come first.")
+        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The accepted answer shall come first.")
+        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedAscending, "The accepted answer shall come first.")
     }
 
     func testAnswersWithEquapScoreCompareEqually() {
         sut.score = answerScore
         otherAnswer.score = answerScore
-        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedSame, "Two Answers with equal scores compare equally.")
-        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedSame, "Two Answers with equal scores compare equally.")
+        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedSame, "Two Answers with equal scores shall compare equally.")
+        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedSame, "Two Answers with equal scores shall compare equally.")
+    }
+
+    func testLowerScoringAnswerComesAfterHigher() {
+        sut.score = answerScore
+        otherAnswer.score = answerScore + 10
+        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The Answer with the higher score shall come first.")
+        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedAscending, "The Answer with the higher score shall come first.")
     }
 }

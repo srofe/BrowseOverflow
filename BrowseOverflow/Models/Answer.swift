@@ -20,6 +20,12 @@ struct Answer {
         } else if !accepted && other.accepted {
             return .orderedDescending
         }
+
+        if score > other.score {
+            return .orderedAscending
+        } else if score < other.score {
+            return .orderedDescending
+        }
         return .orderedSame
     }
 }
