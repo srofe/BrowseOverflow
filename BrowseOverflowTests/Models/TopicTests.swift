@@ -73,4 +73,12 @@ class TopicTests: XCTestCase {
         XCTAssertTrue(firstQuestion.date > secondQuestion.date, "A Topic should have the latest question should be first in the list.")
 
     }
+
+    func testListOfQuestionsLimitedToTwenty() {
+        let question = Question()
+        for _ in 1...25 {
+            sut.add(question: question)
+        }
+        XCTAssertEqual(sut.recentQuestions.count, 20, "A Topic shall have a maximum of 20 questions.")
+    }
 }

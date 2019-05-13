@@ -21,5 +21,8 @@ struct Topic {
     mutating func add(question: Question) {
         recentQuestions.append(question)
         recentQuestions = recentQuestions.sorted(by: { $0.date > $1.date })
+        if recentQuestions.count > 20 {
+            recentQuestions = Array(recentQuestions[0..<20])
+        }
     }
 }
