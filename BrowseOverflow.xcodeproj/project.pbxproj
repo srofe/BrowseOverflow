@@ -106,11 +106,10 @@
 			isa = PBXGroup;
 			children = (
 				F42060FE22840E7500D4072E /* Main.storyboard */,
+				F42061332288F93E00D4072E /* Models */,
 				F420612822840FD200D4072E /* ViewControllers */,
 				F42060F822840E7500D4072E /* AppDelegate.swift */,
 				F42061292284101000D4072E /* SupportingFiles */,
-				F420612C2284123C00D4072E /* Topic.swift */,
-				F4206130228548CA00D4072E /* Question.swift */,
 			);
 			path = BrowseOverflow;
 			sourceTree = "<group>";
@@ -118,9 +117,8 @@
 		F420610E22840E7600D4072E /* BrowseOverflowTests */ = {
 			isa = PBXGroup;
 			children = (
+				F42061342288F95500D4072E /* Models */,
 				F420611122840E7600D4072E /* Info.plist */,
-				F420612A228411C100D4072E /* TopicTests.swift */,
-				F420612E228545ED00D4072E /* QuestionTests.swift */,
 			);
 			path = BrowseOverflowTests;
 			sourceTree = "<group>";
@@ -151,6 +149,24 @@
 				F420610622840E7600D4072E /* Info.plist */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		F42061332288F93E00D4072E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F420612C2284123C00D4072E /* Topic.swift */,
+				F4206130228548CA00D4072E /* Question.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F42061342288F95500D4072E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F420612A228411C100D4072E /* TopicTests.swift */,
+				F420612E228545ED00D4072E /* QuestionTests.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
