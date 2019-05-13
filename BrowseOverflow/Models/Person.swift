@@ -10,4 +10,5 @@ import Foundation
 
 struct Person {
     let name: String
+    let avatarUrl: URL
 }

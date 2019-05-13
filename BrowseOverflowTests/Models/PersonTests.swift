@@ -11,15 +11,27 @@ import XCTest
 
 class PersonTests: XCTestCase {
 
+    // The System Under Test - A Person
+    var sut: Person!
+
+    let personName = "Simon Rofe"
+    let personUrl = URL(string: "http://example.com/avatar.png")
+
     override func setUp() {
+        super.setUp()
+        sut = Person(name: personName, avatarUrl: personUrl!)
     }
 
     override func tearDown() {
+        sut = nil
+        super.tearDown()
     }
 
     func testPersonHasAName() {
-        let person = Person(name: "Simon Rofe")
-        XCTAssertEqual(person.name, "Simon Rofe", "A Person shall have a name.")
+        XCTAssertEqual(sut.name, personName, "A Person shall have a name.")
     }
 
+    func testPersonHasAvaratURL() {
+        XCTAssertEqual(sut.avatarUrl, personUrl!, "A Person shall have an avatar URL.")
+    }
 }
