@@ -22,4 +22,11 @@ class AnswerTests: XCTestCase {
         answer.text = "The answer is 42"
         XCTAssertEqual(answer.text, "The answer is 42", "An Answer has some text.")
     }
+
+    func testSomeoneProvidedTheAnswer() {
+        var answer = Answer()
+        let person = Person(name: "Simon Rofe", avatarUrl: URL(string: "http://example.com/avatar.png")!)
+        answer.person = person
+        XCTAssertNotNil(answer.person, "An Answer shall have someone who provided it.")
+    }
 }

@@ -10,4 +10,5 @@ import Foundation
 
 struct Answer {
     var text: String = ""
+    var person: Person = Person(name: "", avatarUrl: URL(string: "http://example.com")!)
 }
