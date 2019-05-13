@@ -11,10 +11,18 @@ import Foundation
 struct Topic {
     let name: String
     let tag: String
-    let recentQuestions: [String] = []
+    private (set) var recentQuestions: [Question] = []
 
     init(name: String, tag: String) {
         self.name = name
         self.tag = tag
+    }
+
+    mutating func add(question: Question) {
+        recentQuestions.append(question)
+        recentQuestions = recentQuestions.sorted(by: { $0.date > $1.date })
+        if recentQuestions.count > 20 {
+            recentQuestions = Array(recentQuestions[0..<20])
+        }
     }
 }
