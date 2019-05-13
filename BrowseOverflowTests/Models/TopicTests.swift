@@ -42,4 +42,10 @@ class TopicTests: XCTestCase {
     func testTopicHasArrayOfQuestions() {
         XCTAssertEqual(sut.recentQuestions.count, 0, "A Topic shall have an array of recent questions which is initially empty.")
     }
+
+    func testAddingAQuestionIncreasesQuestionListByOne() {
+        let question = Question()
+        sut.recentQuestions.append(question)
+        XCTAssertEqual(sut.recentQuestions.count, 1, "Adding a Question to a Topic shall increase the number of Questions by one.")
+    }
 }
