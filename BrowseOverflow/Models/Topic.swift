@@ -11,7 +11,7 @@ import Foundation
 struct Topic {
     let name: String
     let tag: String
-    fileprivate (set) var recentQuestions: [Question] = []
+    private (set) var recentQuestions: [Question] = []
 
     init(name: String, tag: String) {
         self.name = name
