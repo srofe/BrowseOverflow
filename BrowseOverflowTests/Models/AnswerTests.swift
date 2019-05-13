@@ -40,4 +40,9 @@ class AnswerTests: XCTestCase {
     func testAnswerIsNotAcceptedByDefault() {
         XCTAssertFalse(sut.accepted, "An Answer is not accepted by default.")
     }
+
+    func testAnswerCanBeAccepted() {
+        sut.accepted = true
+        XCTAssertTrue(sut.accepted, "An Answer shall be able to be accepted.")
+    }
 }
