@@ -60,4 +60,17 @@ class TopicTests: XCTestCase {
         let secondQuestion = sut.recentQuestions[1]
         XCTAssertTrue(firstQuestion.date > secondQuestion.date, "A Topic should have the latest question should be first in the list.")
     }
+
+    func testQuestionsListSortedChronologicallyLaterAddedFirst() {
+        var questionOne = Question()
+        questionOne.date = Date.distantFuture
+        var questionTwo = Question()
+        questionTwo.date = Date.distantPast
+        sut.add(question: questionOne)
+        sut.add(question: questionTwo)
+        let firstQuestion = sut.recentQuestions[0]
+        let secondQuestion = sut.recentQuestions[1]
+        XCTAssertTrue(firstQuestion.date > secondQuestion.date, "A Topic should have the latest question should be first in the list.")
+
+    }
 }
