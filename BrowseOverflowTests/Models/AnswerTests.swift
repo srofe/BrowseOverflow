@@ -65,4 +65,11 @@ class AnswerTests: XCTestCase {
         XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The accepted answer should come first.")
         XCTAssertEqual(otherAnswer.compare(with: sut), .orderedAscending, "The accepted answer should come first.")
     }
+
+    func testAnswersWithEquapScoreCompareEqually() {
+        sut.score = answerScore
+        otherAnswer.score = answerScore
+        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedSame, "Two Answers with equal scores compare equally.")
+        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedSame, "Two Answers with equal scores compare equally.")
+    }
 }
