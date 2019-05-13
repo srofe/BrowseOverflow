@@ -9,13 +9,7 @@
 import Foundation
 
 struct Question {
-    var date: Date
-    var score: Int
-    var title: String
-
-    init(date: Date = Date()) {
-        self.date = date
-        self.score = 0
-        self.title = ""
-    }
+    var date: Date = Date()
+    var score: Int = 0
+    var title: String = ""
 }
