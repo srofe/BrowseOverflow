@@ -18,16 +18,18 @@ class AnswerTests: XCTestCase {
     let answerDefaultScore = 0
     let answerScore = 42
 
-    var otherAnswer = Answer()
+    var otherAnswer: Answer!
 
     override func setUp() {
         super.setUp()
         sut = Answer()
+        otherAnswer = Answer()
         otherAnswer.text = "I have the answer you need"
     }
 
     override func tearDown() {
         sut = nil
+        otherAnswer = nil
         super.tearDown()
     }
 
