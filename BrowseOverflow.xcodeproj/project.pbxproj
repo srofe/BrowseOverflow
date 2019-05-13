@@ -20,6 +20,8 @@
 		F4206131228548CA00D4072E /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4206130228548CA00D4072E /* Question.swift */; };
 		F42061362288F9BA00D4072E /* PersonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42061352288F9BA00D4072E /* PersonTests.swift */; };
 		F42061382288FA4C00D4072E /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42061372288FA4C00D4072E /* Person.swift */; };
+		F420613A2289402400D4072E /* AnswerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42061392289402400D4072E /* AnswerTests.swift */; };
+		F420613C228940A600D4072E /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F420613B228940A600D4072E /* Answer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		F4206130228548CA00D4072E /* Question.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		F42061352288F9BA00D4072E /* PersonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonTests.swift; sourceTree = "<group>"; };
 		F42061372288FA4C00D4072E /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		F42061392289402400D4072E /* AnswerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerTests.swift; sourceTree = "<group>"; };
+		F420613B228940A600D4072E /* Answer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +165,7 @@
 				F420612C2284123C00D4072E /* Topic.swift */,
 				F4206130228548CA00D4072E /* Question.swift */,
 				F42061372288FA4C00D4072E /* Person.swift */,
+				F420613B228940A600D4072E /* Answer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -171,6 +176,7 @@
 				F420612A228411C100D4072E /* TopicTests.swift */,
 				F420612E228545ED00D4072E /* QuestionTests.swift */,
 				F42061352288F9BA00D4072E /* PersonTests.swift */,
+				F42061392289402400D4072E /* AnswerTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -310,6 +316,7 @@
 				F42061382288FA4C00D4072E /* Person.swift in Sources */,
 				F4206131228548CA00D4072E /* Question.swift in Sources */,
 				F42060FD22840E7500D4072E /* DetailViewController.swift in Sources */,
+				F420613C228940A600D4072E /* Answer.swift in Sources */,
 				F420612D2284123C00D4072E /* Topic.swift in Sources */,
 				F42060FB22840E7500D4072E /* MasterViewController.swift in Sources */,
 				F42060F922840E7500D4072E /* AppDelegate.swift in Sources */,
@@ -323,6 +330,7 @@
 				F420612B228411C100D4072E /* TopicTests.swift in Sources */,
 				F42061362288F9BA00D4072E /* PersonTests.swift in Sources */,
 				F420612F228545ED00D4072E /* QuestionTests.swift in Sources */,
+				F420613A2289402400D4072E /* AnswerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
