@@ -15,6 +15,8 @@ class AnswerTests: XCTestCase {
     var sut: Answer!
 
     let answerText = "The answer is 42"
+    let answerDefaultScore = 0
+    let answerScore = 42
 
     override func setUp() {
         super.setUp()
@@ -44,5 +46,14 @@ class AnswerTests: XCTestCase {
     func testAnswerCanBeAccepted() {
         sut.accepted = true
         XCTAssertTrue(sut.accepted, "An Answer shall be able to be accepted.")
+    }
+
+    func testAnswerHasAScoreWithDefaultOfZero() {
+        XCTAssertEqual(sut.score, answerDefaultScore, "An Answer shall have a score with a default of zero.")
+    }
+
+    func testScoreCanBeSet() {
+        sut.score = answerScore
+        XCTAssertEqual(sut.score, answerScore, "An Answer shall allow the score to be set.")
     }
 }
