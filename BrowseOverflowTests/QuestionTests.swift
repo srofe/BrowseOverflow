@@ -11,19 +11,23 @@ import XCTest
 
 class QuestionTests: XCTestCase {
 
+    // The System Under Test - a Question.
+    var sut: Question!
+
     override func setUp() {
         super.setUp()
+        sut = Question()
     }
 
     override func tearDown() {
+        sut = nil
         super.tearDown()
     }
 
     func testQuestionDateCanBeSet() {
         let date = Date.distantPast
-        var question = Question()
-        question.date = date
-        XCTAssertEqual(question.date, date, "A Question shall allow its date to be set.")
+        sut.date = date
+        XCTAssertEqual(sut.date, date, "A Question shall allow its date to be set.")
     }
 
     func testDefaultDateIsCurrentDate() {
@@ -32,5 +36,16 @@ class QuestionTests: XCTestCase {
         let later = Date()
         let range = now...later
         XCTAssertTrue(range.contains(question.date), "A Question shall have a default date that is the current date.")
+    }
+
+    func testQuestionHasAScore() {
+        let score = 0
+        XCTAssertEqual(sut.score, score, "A Question shall have a default score of zero.")
+    }
+
+    func testQuerstionScoreCanBeSet() {
+        let score = 42
+        sut.score = 42
+        XCTAssertEqual(sut.score, score, "A Questions shall allow it's score to be set.")
     }
 }

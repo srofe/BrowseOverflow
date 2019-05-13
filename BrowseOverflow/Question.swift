@@ -10,8 +10,10 @@ import Foundation
 
 struct Question {
     var date: Date
+    var score: Int
 
     init(date: Date = Date()) {
         self.date = date
+        self.score = 0
     }
 }
