@@ -48,4 +48,15 @@ class QuestionTests: XCTestCase {
         sut.score = 42
         XCTAssertEqual(sut.score, score, "A Questions shall allow it's score to be set.")
     }
+
+    func testQuestionHasATitle() {
+        let title = ""
+        XCTAssertEqual(sut.title, title, "A Questions shall have a title with a default value of an empty string.")
+    }
+
+    func testQuestionsTitleCanBeSet() {
+        let title = "Do iPhones also dream of electric sheep?"
+        sut.title = title
+        XCTAssertEqual(sut.title, title, "A Questions shall allow it's title to be set.")
+    }
 }
