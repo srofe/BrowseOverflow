@@ -11,10 +11,14 @@ import Foundation
 struct Topic {
     let name: String
     let tag: String
-    var recentQuestions: [Question] = []
+    fileprivate (set) var recentQuestions: [Question] = []
 
     init(name: String, tag: String) {
         self.name = name
         self.tag = tag
+    }
+
+    mutating func add(question: Question) {
+        recentQuestions.append(question)
     }
 }

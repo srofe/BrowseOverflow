@@ -45,7 +45,7 @@ class TopicTests: XCTestCase {
 
     func testAddingAQuestionIncreasesQuestionListByOne() {
         let question = Question()
-        sut.recentQuestions.append(question)
+        sut.add(question: question)
         XCTAssertEqual(sut.recentQuestions.count, 1, "Adding a Question to a Topic shall increase the number of Questions by one.")
     }
 
@@ -54,8 +54,8 @@ class TopicTests: XCTestCase {
         questionOne.date = Date.distantPast
         var questionTwo = Question()
         questionTwo.date = Date.distantFuture
-        sut.recentQuestions.append(questionOne)
-        sut.recentQuestions.append(questionTwo)
+        sut.add(question: questionOne)
+        sut.add(question: questionTwo)
         let firstQuestion = sut.recentQuestions[0]
         let secondQuestion = sut.recentQuestions[1]
         XCTAssertTrue(firstQuestion.date > secondQuestion.date, "A Topic should have the latest question should be first in the list.")
