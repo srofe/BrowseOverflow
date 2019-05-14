@@ -8,11 +8,18 @@
 
 import Foundation
 
-struct Answer {
+struct Answer : Equatable {
     var text: String = ""
     var person: Person = Person(name: "", avatarUrl: URL(string: "http://example.com")!)
     var accepted: Bool = false
     var score: Int = 0
+
+    static func == (left: Answer, right: Answer) -> Bool {
+        if left.text == right.text {
+            return true
+        }
+        return false
+    }
 
     static func < (left: Answer, right: Answer) -> Bool {
         if !left.accepted && right.accepted {

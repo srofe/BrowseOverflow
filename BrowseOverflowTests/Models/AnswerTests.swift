@@ -102,4 +102,15 @@ class AnswerTests: XCTestCase {
         XCTAssertFalse(sut > otherAnswer, "Answers with the same score shall not be greater than.")
         XCTAssertFalse(otherAnswer > sut, "Answers with the same score shall not be greater than.")
     }
+
+    func testAnswersWithSameTextAreEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text shall be equal.")
+    }
+
+    func testAnswersWithDifferntTextShallNotBeEqual() {
+        sut.text = answerText
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different text shall not be equal.")
+    }
 }
