@@ -34,4 +34,9 @@ class PersonTests: XCTestCase {
     func testPersonHasAvaratURL() {
         XCTAssertEqual(sut.avatarUrl, personUrl!, "A Person shall have an avatar URL.")
     }
+
+    func testTwoPersonsWithSameNameAndURLAreEqual() {
+        let otherPerson = Person(name: personName, avatarUrl: personUrl!)
+        XCTAssertEqual(sut, otherPerson, "Two Persons with the same name and URL shall be equal.")
+    }
 }
