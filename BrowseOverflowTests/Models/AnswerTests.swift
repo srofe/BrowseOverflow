@@ -96,6 +96,13 @@ class AnswerTests: XCTestCase {
         XCTAssertFalse(otherAnswer > sut, "The answer with the higher score shall be greater than the answer with the lower score.")
     }
 
+    func testAnswersWithSameScoresNotGreaterThan() {
+        sut.score = answerScore
+        otherAnswer.score = answerScore
+        XCTAssertFalse(sut > otherAnswer, "Answers with the same score shall not be greater than.")
+        XCTAssertFalse(otherAnswer > sut, "Answers with the same score shall not be greater than.")
+    }
+
     func testAcceptedAnswerComesBeforeUnaccepted() {
         otherAnswer.accepted = true
         XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The accepted answer shall come first.")
