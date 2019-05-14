@@ -16,7 +16,7 @@ struct Answer : Equatable {
 
     static func == (left: Answer, right: Answer) -> Bool {
         if (left.text == right.text) &&
-            (left.person.name == right.person.name && left.person.avatarUrl == right.person.avatarUrl) &&
+            (left.person == right.person) &&
             (left.accepted == right.accepted) &&
             (left.score == right.score) {
             return true
