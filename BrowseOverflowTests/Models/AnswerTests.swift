@@ -15,6 +15,7 @@ class AnswerTests: XCTestCase {
     var sut: Answer!
 
     let answerText = "The answer is 42"
+    let answerPerson = Person(name: "Simon Rofe", avatarUrl: URL(string: "http://example.com/avatar.png")!)
     let answerDefaultScore = 0
     let answerScore = 42
 
@@ -39,8 +40,7 @@ class AnswerTests: XCTestCase {
     }
 
     func testSomeoneProvidedTheAnswer() {
-        let person = Person(name: "Simon Rofe", avatarUrl: URL(string: "http://example.com/avatar.png")!)
-        sut.person = person
+        sut.person = answerPerson
         XCTAssertNotNil(sut.person, "An Answer shall have someone who provided it.")
     }
 
@@ -101,5 +101,78 @@ class AnswerTests: XCTestCase {
         otherAnswer.score = answerScore
         XCTAssertFalse(sut > otherAnswer, "Answers with the same score shall not be greater than.")
         XCTAssertFalse(otherAnswer > sut, "Answers with the same score shall not be greater than.")
+    }
+
+    func testAnswersWithSameTextAreEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text shall be equal.")
+    }
+
+    func testAnswersWithDifferntTextShallNotBeEqual() {
+        sut.text = answerText
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different text shall not be equal.")
+    }
+
+    func testAnswersWithSamePersonAndTextShallBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text and person shall be equal.")
+    }
+
+    func testAnswersWithDifferentPersonShallNotBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with the different person shall not be equal.")
+    }
+
+    func testAnswersWithSameAcceptedPersonAndTextShallBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = true
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text, person and accepted shall be equal.")
+        sut.accepted = false
+        otherAnswer.accepted = false
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text, person and accepted shall be equal.")
+    }
+
+    func testAnswersWithDifferentAcceptedShallNotBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = false
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different accepted shall not be equal.")
+    }
+
+    func testAnswersWithSamePropertiesShallBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = true
+        sut.score = answerScore
+        otherAnswer.score = answerScore
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same properties shall be equal.")
+    }
+
+    func testAnswersWithDifferentScoreShallNotBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = true
+        sut.score = answerScore
+        otherAnswer.score = answerScore + 10
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different scores shall not be equal.")
     }
 }
