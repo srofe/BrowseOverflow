@@ -15,6 +15,7 @@ class AnswerTests: XCTestCase {
     var sut: Answer!
 
     let answerText = "The answer is 42"
+    let answerPerson = Person(name: "Simon Rofe", avatarUrl: URL(string: "http://example.com/avatar.png")!)
     let answerDefaultScore = 0
     let answerScore = 42
 
@@ -39,8 +40,7 @@ class AnswerTests: XCTestCase {
     }
 
     func testSomeoneProvidedTheAnswer() {
-        let person = Person(name: "Simon Rofe", avatarUrl: URL(string: "http://example.com/avatar.png")!)
-        sut.person = person
+        sut.person = answerPerson
         XCTAssertNotNil(sut.person, "An Answer shall have someone who provided it.")
     }
 
@@ -112,5 +112,20 @@ class AnswerTests: XCTestCase {
     func testAnswersWithDifferntTextShallNotBeEqual() {
         sut.text = answerText
         XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different text shall not be equal.")
+    }
+
+    func testAnswersWithSamePersonAndTextShallBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text and person shall be equal.")
+    }
+
+    func testAnswersWithDifferentPersonAndTextShallNotBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with the same text and person shall be equal.")
     }
 }

@@ -15,7 +15,8 @@ struct Answer : Equatable {
     var score: Int = 0
 
     static func == (left: Answer, right: Answer) -> Bool {
-        if left.text == right.text {
+        if (left.text == right.text) &&
+            (left.person.name == right.person.name && left.person.avatarUrl == right.person.avatarUrl) {
             return true
         }
         return false
