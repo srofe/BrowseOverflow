@@ -82,4 +82,19 @@ class QuestionTests: XCTestCase {
         sut.add(answer: acceptedAnswer)
         XCTAssertTrue(sut.answers[0].accepted, "The accepted answer shall be the first answer.")
     }
+
+    func testQuesionHasHighScoreAnswerBeforeLowScoreAnswer() {
+        var acceptedAnswer = Answer()
+        acceptedAnswer.accepted = true
+        var lowScoreAnswer = Answer()
+        lowScoreAnswer.score = -4
+        var highScoreAnswer = Answer()
+        highScoreAnswer.score = 4
+        sut.add(answer: lowScoreAnswer)
+        sut.add(answer: highScoreAnswer)
+        sut.add(answer: acceptedAnswer)
+        let lowIndex = sut.answers.firstIndex(of: lowScoreAnswer)!
+        let highIndex = sut.answers.firstIndex(of: highScoreAnswer)!
+        XCTAssertTrue(highIndex < lowIndex, "The higher scoring answer shall shall come before the low scoring answer.")
+    }
 }
