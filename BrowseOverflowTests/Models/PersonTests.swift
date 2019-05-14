@@ -44,4 +44,9 @@ class PersonTests: XCTestCase {
         let otherPerson = Person(name: "Joe Bloggs", avatarUrl: personUrl!)
         XCTAssertNotEqual(sut, otherPerson, "Person's with different name and same URL shall not be equal.")
     }
+
+    func testPersonWithDifferentURLAreNotEqual() {
+        let otherPerson = Person(name: personName, avatarUrl: URL(string: "http://example.com")!)
+        XCTAssertNotEqual(sut, otherPerson, "Person's with different name and same URL shall not be equal.")
+    }
 }
