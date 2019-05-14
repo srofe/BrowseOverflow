@@ -122,10 +122,33 @@ class AnswerTests: XCTestCase {
         XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text and person shall be equal.")
     }
 
-    func testAnswersWithDifferentPersonAndTextShallNotBeEqual() {
+    func testAnswersWithDifferentPersonShallNotBeEqual() {
         sut.text = answerText
         otherAnswer.text = answerText
         sut.person = answerPerson
-        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with the same text and person shall be equal.")
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with the different person shall not be equal.")
+    }
+
+    func testAnswersWithSameAcceptedPersonAndTextShallBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = true
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text, person and accepted shall be equal.")
+        sut.accepted = false
+        otherAnswer.accepted = false
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same text, person and accepted shall be equal.")
+    }
+
+    func testAnswersWithDifferentAcceptedShallNotBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = false
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different accepted shall not be equal.")
     }
 }
