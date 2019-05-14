@@ -39,19 +39,4 @@ struct Answer {
         }
         return false
     }
-
-    func compare(with other: Answer) -> ComparisonResult {
-        if accepted && !other.accepted {
-            return .orderedAscending
-        } else if !accepted && other.accepted {
-            return .orderedDescending
-        }
-
-        if score > other.score {
-            return .orderedAscending
-        } else if score < other.score {
-            return .orderedDescending
-        }
-        return .orderedSame
-    }
 }
