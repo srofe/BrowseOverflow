@@ -14,18 +14,29 @@ struct Answer {
     var accepted: Bool = false
     var score: Int = 0
 
-    func compare(with other: Answer) -> ComparisonResult {
-        if accepted && !other.accepted {
-            return .orderedAscending
-        } else if !accepted && other.accepted {
-            return .orderedDescending
+    static func < (left: Answer, right: Answer) -> Bool {
+        if !left.accepted && right.accepted {
+            return true
+        } else if left.accepted && !right.accepted {
+            return false
         }
 
-        if score > other.score {
-            return .orderedAscending
-        } else if score < other.score {
-            return .orderedDescending
+        if left.score < right.score {
+            return true
         }
-        return .orderedSame
+        return false
+    }
+
+    static func > (left: Answer, right: Answer) -> Bool {
+        if left.accepted && !right.accepted {
+            return true
+        } else if !left.accepted && right.accepted {
+            return false
+        }
+
+        if left.score > right.score {
+            return true
+        }
+        return false
     }
 }

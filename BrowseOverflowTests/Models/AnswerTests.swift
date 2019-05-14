@@ -62,23 +62,44 @@ class AnswerTests: XCTestCase {
         XCTAssertEqual(sut.score, answerScore, "An Answer shall allow the score to be set.")
     }
 
-    func testAcceptedAnswerComesBeforeUnaccepted() {
+    func testUnacceptedAnswerIsLessThanAcceptedAnswer() {
         otherAnswer.accepted = true
-        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The accepted answer shall come first.")
-        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedAscending, "The accepted answer shall come first.")
+        XCTAssertTrue(sut < otherAnswer, "The unaccepted answer shall be less than the accepted answer.")
+        XCTAssertFalse(otherAnswer < sut, "The unaccepted answer shall be less than the accepted answer.")
     }
 
-    func testAnswersWithEquapScoreCompareEqually() {
-        sut.score = answerScore
-        otherAnswer.score = answerScore
-        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedSame, "Two Answers with equal scores shall compare equally.")
-        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedSame, "Two Answers with equal scores shall compare equally.")
-    }
-
-    func testLowerScoringAnswerComesAfterHigher() {
+    func testAnswerWithLowerScoreIsLessThanGreaterScore() {
         sut.score = answerScore
         otherAnswer.score = answerScore + 10
-        XCTAssertEqual(sut.compare(with: otherAnswer), .orderedDescending, "The Answer with the higher score shall come first.")
-        XCTAssertEqual(otherAnswer.compare(with: sut), .orderedAscending, "The Answer with the higher score shall come first.")
+        XCTAssertTrue(sut < otherAnswer, "The answer with the lower score shall be less than the answer with the greater score.")
+        XCTAssertFalse(otherAnswer < sut, "The answer with the lower score shall be less than the answer with the greater score.")
+    }
+
+    func testAnswersWithSameScoresNotLessThan() {
+        sut.score = answerScore
+        otherAnswer.score = answerScore
+        XCTAssertFalse(sut < otherAnswer, "Answers with the same score shall not be less than.")
+        XCTAssertFalse(otherAnswer < sut, "Answers with the same score shall not be less than.")
+
+    }
+
+    func testAcceptedAnswerIsGreaterThanUnacceptedAnswer() {
+        sut.accepted = true
+        XCTAssertTrue(sut > otherAnswer, "The accepted answer shall be greater than the unaccepted answer.")
+        XCTAssertFalse(otherAnswer > sut, "The accepted answer shall be greater than the unaccepted answer.")
+    }
+
+    func testAnswerWithHigherScoreIsGreaterThanLowerScore() {
+        sut.score = answerScore + 10
+        otherAnswer.score = answerScore
+        XCTAssertTrue(sut > otherAnswer, "The answer with the higher score shall be greater than the answer with the lower score.")
+        XCTAssertFalse(otherAnswer > sut, "The answer with the higher score shall be greater than the answer with the lower score.")
+    }
+
+    func testAnswersWithSameScoresNotGreaterThan() {
+        sut.score = answerScore
+        otherAnswer.score = answerScore
+        XCTAssertFalse(sut > otherAnswer, "Answers with the same score shall not be greater than.")
+        XCTAssertFalse(otherAnswer > sut, "Answers with the same score shall not be greater than.")
     }
 }
