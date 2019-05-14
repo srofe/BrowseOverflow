@@ -8,24 +8,45 @@
 
 import Foundation
 
-struct Answer {
+struct Answer : Equatable {
     var text: String = ""
     var person: Person = Person(name: "", avatarUrl: URL(string: "http://example.com")!)
     var accepted: Bool = false
     var score: Int = 0
 
-    func compare(with other: Answer) -> ComparisonResult {
-        if accepted && !other.accepted {
-            return .orderedAscending
-        } else if !accepted && other.accepted {
-            return .orderedDescending
+    static func == (left: Answer, right: Answer) -> Bool {
+        if (left.text == right.text) &&
+            (left.person == right.person) &&
+            (left.accepted == right.accepted) &&
+            (left.score == right.score) {
+            return true
+        }
+        return false
+    }
+
+    static func < (left: Answer, right: Answer) -> Bool {
+        if !left.accepted && right.accepted {
+            return true
+        } else if left.accepted && !right.accepted {
+            return false
         }
 
-        if score > other.score {
-            return .orderedAscending
-        } else if score < other.score {
-            return .orderedDescending
+        if left.score < right.score {
+            return true
         }
-        return .orderedSame
+        return false
+    }
+
+    static func > (left: Answer, right: Answer) -> Bool {
+        if left.accepted && !right.accepted {
+            return true
+        } else if !left.accepted && right.accepted {
+            return false
+        }
+
+        if left.score > right.score {
+            return true
+        }
+        return false
     }
 }

@@ -12,4 +12,10 @@ struct Question {
     var date: Date = Date()
     var score: Int = 0
     var title: String = ""
+    private (set) var answers: [Answer] = []
+
+    mutating func add(answer: Answer) {
+        answers.append(answer)
+        answers = answers.sorted { $0 > $1 }
+    }
 }

@@ -59,4 +59,42 @@ class QuestionTests: XCTestCase {
         sut.title = title
         XCTAssertEqual(sut.title, title, "A Questions shall allow it's title to be set.")
     }
+
+    func testQuestionDefaultAnswersIsEmpty() {
+        XCTAssertEqual(sut.answers.count, 0, "The default number of Answers in a question shall be 0.")
+    }
+
+    func testQuestionCanAddAnswers() {
+        let answer = Answer()
+        sut.add(answer: answer)
+        XCTAssertEqual(sut.answers.count, 1, "A Questions shall allow answers to be added.")
+    }
+
+    func testQuesionHasAcceptedAnswerFirst() {
+        var acceptedAnswer = Answer()
+        acceptedAnswer.accepted = true
+        var lowScoreAnswer = Answer()
+        lowScoreAnswer.score = -4
+        var highScoreAnswer = Answer()
+        highScoreAnswer.score = 4
+        sut.add(answer: lowScoreAnswer)
+        sut.add(answer: highScoreAnswer)
+        sut.add(answer: acceptedAnswer)
+        XCTAssertTrue(sut.answers[0].accepted, "The accepted answer shall be the first answer.")
+    }
+
+    func testQuesionHasHighScoreAnswerBeforeLowScoreAnswer() {
+        var acceptedAnswer = Answer()
+        acceptedAnswer.accepted = true
+        var lowScoreAnswer = Answer()
+        lowScoreAnswer.score = -4
+        var highScoreAnswer = Answer()
+        highScoreAnswer.score = 4
+        sut.add(answer: lowScoreAnswer)
+        sut.add(answer: highScoreAnswer)
+        sut.add(answer: acceptedAnswer)
+        let lowIndex = sut.answers.firstIndex(of: lowScoreAnswer)!
+        let highIndex = sut.answers.firstIndex(of: highScoreAnswer)!
+        XCTAssertTrue(highIndex < lowIndex, "The higher scoring answer shall shall come before the low scoring answer.")
+    }
 }
