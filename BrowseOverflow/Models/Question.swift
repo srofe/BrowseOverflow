@@ -16,5 +16,8 @@ struct Question {
 
     mutating func add(answer: Answer) {
         answers.append(answer)
+        answers = answers.sorted {
+            return $0.compare(with: $1) == .orderedAscending ? true : false
+        }
     }
 }

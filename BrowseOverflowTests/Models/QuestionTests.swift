@@ -69,4 +69,17 @@ class QuestionTests: XCTestCase {
         sut.add(answer: answer)
         XCTAssertEqual(sut.answers.count, 1, "A Questions shall allow answers to be added.")
     }
+
+    func testQuesionHasAcceptedAnswerFirst() {
+        var acceptedAnswer = Answer()
+        acceptedAnswer.accepted = true
+        var lowScoreAnswer = Answer()
+        lowScoreAnswer.score = -4
+        var highScoreAnswer = Answer()
+        highScoreAnswer.score = 4
+        sut.add(answer: lowScoreAnswer)
+        sut.add(answer: highScoreAnswer)
+        sut.add(answer: acceptedAnswer)
+        XCTAssertTrue(sut.answers[0].accepted, "The accepted answer shall be the first answer.")
+    }
 }
