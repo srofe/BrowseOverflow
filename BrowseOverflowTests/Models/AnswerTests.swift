@@ -151,4 +151,28 @@ class AnswerTests: XCTestCase {
         otherAnswer.accepted = false
         XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different accepted shall not be equal.")
     }
+
+    func testAnswersWithSamePropertiesShallBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = true
+        sut.score = answerScore
+        otherAnswer.score = answerScore
+        XCTAssertEqual(sut, otherAnswer, "Two Answers with the same properties shall be equal.")
+    }
+
+    func testAnswersWithDifferentScoreShallNotBeEqual() {
+        sut.text = answerText
+        otherAnswer.text = answerText
+        sut.person = answerPerson
+        otherAnswer.person = answerPerson
+        sut.accepted = true
+        otherAnswer.accepted = true
+        sut.score = answerScore
+        otherAnswer.score = answerScore + 10
+        XCTAssertNotEqual(sut, otherAnswer, "Two Answers with different scores shall not be equal.")
+    }
 }
