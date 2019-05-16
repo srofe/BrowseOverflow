@@ -17,6 +17,8 @@ class QuestionCreationTests: XCTestCase {
     override func setUp() {
         super.setUp()
         sut = StackOverflowManager()
+        sut.delegate = MockStackOverflowManagerDelegate()
+        sut.communicator = MockStackOverflowCommunicator()
     }
 
     override func tearDown() {
@@ -24,13 +26,21 @@ class QuestionCreationTests: XCTestCase {
         super.tearDown()
     }
 
+    func testWeHaveADelegate() {
+        XCTAssertNotNil(sut.delegate, "The StackOverflowManager shall be able to assign a delegate.")
+    }
+
+    func testWeHaveACommunicator() {
+        XCTAssertNotNil(sut.communicator, "The StackOverflowManager shall be able to assign a communicator.")
+    }
     func testAskingForQuestionsMeansRequestingData() {
-        let communicator = MockStackOverflowCommunicator()
-        sut.communicator = communicator
         let topic = Topic(name: "iPhone", tag: "iphone")
         sut.fetchQuestions(on: topic)
         XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchQuestions, "The communicator shall be asked to fetch data when request with a topic.")
     }
+}
+
+class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
 }
 
 class MockStackOverflowCommunicator : StackOverflowCommunicator {
