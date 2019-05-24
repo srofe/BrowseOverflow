@@ -14,14 +14,18 @@ class QuestionCreationTests: XCTestCase {
     // The System Under Test - a StackOverFlowManager
     var sut: StackOverflowManager!
 
+    var sutUnderlyingError: NSError!
+
     override func setUp() {
         super.setUp()
         sut = StackOverflowManager()
         sut.delegate = MockStackOverflowManagerDelegate()
         sut.communicator = MockStackOverflowCommunicator()
+        sutUnderlyingError = NSError(domain: "Test domain", code: 0, userInfo: nil)
     }
 
     override func tearDown() {
+        sutUnderlyingError = nil
         sut = nil
         super.tearDown()
     }
@@ -41,17 +45,15 @@ class QuestionCreationTests: XCTestCase {
     }
 
     func testErrorReturnedToDelegateIsNotErrorNotifiedByCommunicator() {
-        let underlyingError = NSError(domain: "Test domain", code: 0, userInfo: nil)
-        sut.searchingForQuestionsFailed(with: underlyingError)
-        XCTAssertNotEqual(underlyingError, (sut.delegate as? MockStackOverflowManagerDelegate)?.error, "A delegate error shall be at the correct level of abstration.")
+        sut.searchingForQuestionsFailed(with: sutUnderlyingError)
+        XCTAssertNotEqual(sutUnderlyingError, (sut.delegate as? MockStackOverflowManagerDelegate)?.error, "A delegate error shall be at the correct level of abstration.")
     }
 
     func testErrorReturnedToDelegateDocumentsUnderlyingError() {
-        let underlyingError = NSError(domain: "Test Domain", code: 0, userInfo: nil)
-        sut.searchingForQuestionsFailed(with: underlyingError)
+        sut.searchingForQuestionsFailed(with: sutUnderlyingError)
         let delegateError = (sut.delegate as? MockStackOverflowManagerDelegate)?.error
         let delegateUndelyingError = delegateError?.userInfo[NSUnderlyingErrorKey]
-        XCTAssertEqual((delegateUndelyingError as? NSError), underlyingError, "The underlying error shall be available to client code.")
+        XCTAssertEqual((delegateUndelyingError as? NSError), sutUnderlyingError, "The underlying error shall be available to client code.")
     }
 
     func testQuestionJsonParssedTpQuestionBuilder() {
