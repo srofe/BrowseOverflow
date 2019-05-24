@@ -43,7 +43,7 @@ class QuestionCreationTests: XCTestCase {
     func testErrorReturnedToDelegateIsNotErrorNotifiedByCommunicator() {
         let underlyingError = NSError(domain: "Test domain", code: 0, userInfo: nil)
         sut.searchingForQuestionsFailed(with: underlyingError)
-        XCTAssertNotEqual(underlyingError, (sut.delegate as? MockStackOverflowManagerDelegate)?.error, "A delegate error should be at the correct level of abstration.")
+        XCTAssertNotEqual(underlyingError, (sut.delegate as? MockStackOverflowManagerDelegate)?.error, "A delegate error shall be at the correct level of abstration.")
     }
 
     func testErrorReturnedToDelegateDocumentsUnderlyingError() {
@@ -51,7 +51,15 @@ class QuestionCreationTests: XCTestCase {
         sut.searchingForQuestionsFailed(with: underlyingError)
         let delegateError = (sut.delegate as? MockStackOverflowManagerDelegate)?.error
         let delegateUndelyingError = delegateError?.userInfo[NSUnderlyingErrorKey]
-        XCTAssertEqual((delegateUndelyingError as? NSError), underlyingError, "The underlying error should be available to client code.")
+        XCTAssertEqual((delegateUndelyingError as? NSError), underlyingError, "The underlying error shall be available to client code.")
+    }
+
+    func testQuestionJsonParssedTpQuestionBuilder() {
+        let builder = FakeQuestionBuilder()
+        sut.questionBuilder = builder
+        sut.received(questions: "Fake JSON")
+        let fakeJsonFromBuilder = (sut.questionBuilder as? FakeQuestionBuilder)?.json
+        XCTAssertEqual(fakeJsonFromBuilder, "Fake JSON", "The downloaded JSON shall be sent to the builder.")
     }
 }
 
@@ -67,5 +75,14 @@ class MockStackOverflowCommunicator : StackOverflowCommunicator {
     var wasAskedToFetchQuestions = false
     func searchForQuestions(with tag: String) {
         wasAskedToFetchQuestions = true
+    }
+}
+
+class FakeQuestionBuilder : QuestionBuilder {
+    var json: String = ""
+
+    func questionsFrom(json: String) -> [Question] {
+        self.json = json
+        return []
     }
 }
