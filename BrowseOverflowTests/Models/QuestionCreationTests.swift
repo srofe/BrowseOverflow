@@ -33,14 +33,34 @@ class QuestionCreationTests: XCTestCase {
     func testWeHaveACommunicator() {
         XCTAssertNotNil(sut.communicator, "The StackOverflowManager shall be able to assign a communicator.")
     }
+
     func testAskingForQuestionsMeansRequestingData() {
         let topic = Topic(name: "iPhone", tag: "iphone")
         sut.fetchQuestions(on: topic)
         XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchQuestions, "The communicator shall be asked to fetch data when request with a topic.")
     }
+
+    func testErrorReturnedToDelegateIsNotErrorNotifiedByCommunicator() {
+        let underlyingError = NSError(domain: "Test domain", code: 0, userInfo: nil)
+        sut.searchingForQuestionsFailed(with: underlyingError)
+        XCTAssertNotEqual(underlyingError, (sut.delegate as? MockStackOverflowManagerDelegate)?.error, "A delegate error should be at the correct level of abstration.")
+    }
+
+    func testErrorReturnedToDelegateDocumentsUnderlyingError() {
+        let underlyingError = NSError(domain: "Test Domain", code: 0, userInfo: nil)
+        sut.searchingForQuestionsFailed(with: underlyingError)
+        let delegateError = (sut.delegate as? MockStackOverflowManagerDelegate)?.error
+        let delegateUndelyingError = delegateError?.userInfo[NSUnderlyingErrorKey]
+        XCTAssertEqual((delegateUndelyingError as? NSError), underlyingError, "The underlying error should be available to client code.")
+    }
 }
 
 class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
+    var error: NSError? = nil
+
+    func fetchingQuestions(on topic: Topic?, error: NSError) {
+        self.error = error
+    }
 }
 
 class MockStackOverflowCommunicator : StackOverflowCommunicator {
