@@ -9,7 +9,7 @@
 import Foundation
 
 protocol StackOverflowManagerDelegate {
-    func fetchingQuestions(on topic: Topic?, error: NSError)
+    func fetchingQuestionsFailed(error: NSError)
 }
 
 protocol StackOverflowCommunicator {
@@ -33,6 +33,6 @@ struct StackOverflowManager {
     func searchingForQuestionsFailed(with error: NSError) {
         let errorInfo = [NSUnderlyingErrorKey:error]
         let reportableError = NSError(domain: StackOverflowManagerError, code: StackOverflowError.QuestionSearchCode.rawValue, userInfo: errorInfo)
-        delegate?.fetchingQuestions(on: nil, error: reportableError)
+        delegate?.fetchingQuestionsFailed(error: reportableError)
     }
 }

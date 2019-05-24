@@ -58,7 +58,7 @@ class QuestionCreationTests: XCTestCase {
 class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
     var error: NSError? = nil
 
-    func fetchingQuestions(on topic: Topic?, error: NSError) {
+    func fetchingQuestionsFailed(error: NSError) {
         self.error = error
     }
 }
