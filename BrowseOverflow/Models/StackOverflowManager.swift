@@ -17,7 +17,7 @@ protocol StackOverflowCommunicator {
 }
 
 protocol QuestionBuilder {
-    func questionsFrom(json: String, error: NSErrorPointer) -> [Question]?
+    func questionsFrom(json: String, error: inout NSError?) -> [Question]?
 }
 
 fileprivate let StackOverflowManagerError = "StackOverflowManagerError"
@@ -41,7 +41,15 @@ struct StackOverflowManager {
         delegate?.fetchingQuestionsFailed(error: reportableError)
     }
 
-    func received(questions: String) {
-        _ = questionBuilder?.questionsFrom(json: questions, error: nil)
+    func received(questionsJson: String) {
+        var error: NSError? = nil
+        let questions = questionBuilder?.questionsFrom(json: questionsJson, error: &error)
+        if (questions == nil) {
+            let userInfo = [NSUnderlyingErrorKey:error as Any]
+            let reportableError = NSError(domain: StackOverflowManagerError,
+                                          code: StackOverflowError.QuestionSearchCode.rawValue,
+                                          userInfo:userInfo)
+            delegate?.fetchingQuestionsFailed(error: reportableError)
+        }
     }
 }

@@ -59,9 +59,20 @@ class QuestionCreationTests: XCTestCase {
     func testQuestionJsonParssedTpQuestionBuilder() {
         let builder = FakeQuestionBuilder()
         sut.questionBuilder = builder
-        sut.received(questions: "Fake JSON")
+        sut.received(questionsJson: "Fake JSON")
         let fakeJsonFromBuilder = (sut.questionBuilder as? FakeQuestionBuilder)?.json
         XCTAssertEqual(fakeJsonFromBuilder, "Fake JSON", "The downloaded JSON shall be sent to the builder.")
+    }
+
+    func testDelegateNotifiedOfErrorWhenQuestionBuilderFails() {
+        let builder = FakeQuestionBuilder()
+        builder.arrayToReturn = nil
+        builder.errorToSet = sutUnderlyingError
+        sut.questionBuilder = builder
+        sut.received(questionsJson: "Fake JSON")
+        let delegateError = (sut.delegate as? MockStackOverflowManagerDelegate)?.error
+        let delegateUndelyingError = delegateError?.userInfo[NSUnderlyingErrorKey]
+        XCTAssertNotNil(delegateUndelyingError as? NSError, "The delegate shall have found out about an error when the builder returns nil.")
     }
 }
 
@@ -82,9 +93,12 @@ class MockStackOverflowCommunicator : StackOverflowCommunicator {
 
 class FakeQuestionBuilder : QuestionBuilder {
     var json: String = ""
+    var arrayToReturn: [Question]? = nil
+    var errorToSet: NSError? = nil
 
-    func questionsFrom(json: String, error: NSErrorPointer) -> [Question]? {
+    func questionsFrom(json: String, error: inout NSError?) -> [Question]? {
         self.json = json
-        return nil
+        error = errorToSet
+        return arrayToReturn
     }
 }
