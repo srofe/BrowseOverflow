@@ -83,8 +83,8 @@ class MockStackOverflowCommunicator : StackOverflowCommunicator {
 class FakeQuestionBuilder : QuestionBuilder {
     var json: String = ""
 
-    func questionsFrom(json: String) -> [Question] {
+    func questionsFrom(json: String, error: NSErrorPointer) -> [Question]? {
         self.json = json
-        return []
+        return nil
     }
 }

@@ -17,7 +17,7 @@ protocol StackOverflowCommunicator {
 }
 
 protocol QuestionBuilder {
-    func questionsFrom(json: String) -> [Question]
+    func questionsFrom(json: String, error: NSErrorPointer) -> [Question]?
 }
 
 fileprivate let StackOverflowManagerError = "StackOverflowManagerError"
@@ -42,6 +42,6 @@ struct StackOverflowManager {
     }
 
     func received(questions: String) {
-        let questions = questionBuilder?.questionsFrom(json: questions)
+        _ = questionBuilder?.questionsFrom(json: questions, error: nil)
     }
 }
