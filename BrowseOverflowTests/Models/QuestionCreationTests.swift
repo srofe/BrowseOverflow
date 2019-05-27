@@ -14,7 +14,9 @@ class QuestionCreationTests: XCTestCase {
     // The System Under Test - a StackOverFlowManager
     var sut: StackOverflowManager!
 
+    let sutJsonString = "Fake JSON"
     var sutUnderlyingError: Error!
+    var sutFakeQuestionBuilder: FakeQuestionBuilder!
 
     override func setUp() {
         super.setUp()
@@ -22,9 +24,11 @@ class QuestionCreationTests: XCTestCase {
         sut.delegate = MockStackOverflowManagerDelegate()
         sut.communicator = MockStackOverflowCommunicator()
         sutUnderlyingError = TestError.test
+        sutFakeQuestionBuilder = FakeQuestionBuilder()
     }
 
     override func tearDown() {
+        sutFakeQuestionBuilder = nil
         sutUnderlyingError = nil
         sut = nil
         super.tearDown()
@@ -58,19 +62,17 @@ class QuestionCreationTests: XCTestCase {
     }
 
     func testQuestionJsonParssedTpQuestionBuilder() {
-        let builder = FakeQuestionBuilder()
-        sut.questionBuilder = builder
-        sut.received(questionsJson: "Fake JSON")
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sut.received(questionsJson: sutJsonString)
         let fakeJsonFromBuilder = (sut.questionBuilder as? FakeQuestionBuilder)?.json
-        XCTAssertEqual(fakeJsonFromBuilder, "Fake JSON", "The downloaded JSON shall be sent to the builder.")
+        XCTAssertEqual(fakeJsonFromBuilder, sutJsonString, "The downloaded JSON shall be sent to the builder.")
     }
 
     func testDelegateNotifiedOfErrorWhenQuestionBuilderFails() {
-        let builder = FakeQuestionBuilder()
-        builder.arrayToReturn = nil
-        builder.errorToSet = sutUnderlyingError
-        sut.questionBuilder = builder
-        sut.received(questionsJson: "Fake JSON")
+        sutFakeQuestionBuilder.arrayToReturn = nil
+        sutFakeQuestionBuilder.errorToSet = sutUnderlyingError
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sut.received(questionsJson: sutJsonString)
         let delegateError = sut.delegate?.error as? StackOverflowError
         let underlyingError = delegateError?.underlyingError
         XCTAssertNotNil(underlyingError, "The delegate shall have found out about an error when the builder returns nil.")
