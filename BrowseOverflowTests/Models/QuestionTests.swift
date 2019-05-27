@@ -130,4 +130,22 @@ class QuestionTests: XCTestCase {
         sutOtherQuestion.score = 8
         XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different scores shall not be equal.")
     }
+
+    func testQuestionsWithTheSameTitleAreEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        sut.title = "Question title"
+        sutOtherQuestion.title = "Question title"
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same title shall be equal.")
+    }
+
+    func testQuestionsWithDifferentTitlesAreNotEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertEqual(sut, sutOtherQuestion, "Before setting different titles, Questions must be equal.")
+        sut.title = "Question title"
+        sutOtherQuestion.title = "Other title"
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with the same title shall be equal.")
+
+    }
 }
