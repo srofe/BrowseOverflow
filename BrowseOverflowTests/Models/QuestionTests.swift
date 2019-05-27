@@ -14,12 +14,16 @@ class QuestionTests: XCTestCase {
     // The System Under Test - a Question.
     var sut: Question!
 
+    var sutOtherQuestion: Question!
+
     override func setUp() {
         super.setUp()
         sut = Question()
+        sutOtherQuestion = Question()
     }
 
     override func tearDown() {
+        sutOtherQuestion = nil
         sut = nil
         super.tearDown()
     }
@@ -100,15 +104,13 @@ class QuestionTests: XCTestCase {
 
     func testQuestionsWithSameDateAreEqual() {
         sut.date = Date.distantPast
-        var otherQuestion = Question()
-        otherQuestion.date = Date.distantPast
-        XCTAssertEqual(sut, otherQuestion, "Two Questions with the same date shall be equal.")
+        sutOtherQuestion.date = Date.distantPast
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same date shall be equal.")
     }
 
     func testQuestionsWithDifferentDatesShallNotBeEquall() {
         sut.date = Date.distantPast
-        var otherQuestion = Question()
-        otherQuestion.date = Date.distantFuture
-        XCTAssertNotEqual(sut, otherQuestion, "Two Questions with different dates shall not be equal.")
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different dates shall not be equal.")
     }
 }
