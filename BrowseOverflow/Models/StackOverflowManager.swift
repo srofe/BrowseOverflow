@@ -9,7 +9,8 @@
 import Foundation
 
 protocol StackOverflowManagerDelegate {
-    func fetchingQuestionsFailed(error: NSError)
+    var error: Error? { get set }
+    func fetchingQuestionsFailed(error: Error)
 }
 
 protocol StackOverflowCommunicator {
@@ -17,12 +18,20 @@ protocol StackOverflowCommunicator {
 }
 
 protocol QuestionBuilder {
-    func questionsFrom(json: String, error: inout NSError?) -> [Question]?
+    func questionsFrom(json: String) throws -> [Question]?
 }
 
 fileprivate let StackOverflowManagerError = "StackOverflowManagerError"
 
-enum StackOverflowError: Int {
+struct StackOverflowError: Error {
+    enum ErrorKind {
+        case questionSearchError
+    }
+    let underlyingError: Error?
+    let kind: ErrorKind
+}
+
+enum StackOverflowErrorCode: Int {
     case QuestionSearchCode
 }
 
@@ -35,21 +44,21 @@ struct StackOverflowManager {
         communicator?.searchForQuestions(with: topic.tag)
     }
 
-    func searchingForQuestionsFailed(with error: NSError) {
-        let errorInfo = [NSUnderlyingErrorKey:error]
-        let reportableError = NSError(domain: StackOverflowManagerError, code: StackOverflowError.QuestionSearchCode.rawValue, userInfo: errorInfo)
+    func searchingForQuestionsFailed(with error: Error) {
+        let reportableError = StackOverflowError(underlyingError: error, kind: .questionSearchError)
         delegate?.fetchingQuestionsFailed(error: reportableError)
     }
 
     func received(questionsJson: String) {
-        var error: NSError? = nil
-        let questions = questionBuilder?.questionsFrom(json: questionsJson, error: &error)
-        if (questions == nil) {
-            let userInfo = [NSUnderlyingErrorKey:error]
-            let reportableError = NSError(domain: StackOverflowManagerError,
-                                          code: StackOverflowError.QuestionSearchCode.rawValue,
-                                          userInfo:userInfo)
-            delegate?.fetchingQuestionsFailed(error: reportableError)
+        var reportableError: StackOverflowError? = nil
+        do {
+            if try questionBuilder?.questionsFrom(json: questionsJson) == nil {
+                print("No questions found.")
+                reportableError = StackOverflowError(underlyingError: nil, kind: .questionSearchError)
+            }
+        } catch let underlyingError {
+            reportableError = StackOverflowError(underlyingError: underlyingError, kind: .questionSearchError)
         }
+        delegate?.fetchingQuestionsFailed(error: reportableError!)
     }
 }

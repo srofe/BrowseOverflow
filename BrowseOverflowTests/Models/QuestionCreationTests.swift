@@ -14,14 +14,14 @@ class QuestionCreationTests: XCTestCase {
     // The System Under Test - a StackOverFlowManager
     var sut: StackOverflowManager!
 
-    var sutUnderlyingError: NSError!
+    var sutUnderlyingError: Error!
 
     override func setUp() {
         super.setUp()
         sut = StackOverflowManager()
         sut.delegate = MockStackOverflowManagerDelegate()
         sut.communicator = MockStackOverflowCommunicator()
-        sutUnderlyingError = NSError(domain: "Test domain", code: 0, userInfo: nil)
+        sutUnderlyingError = TestError.test
     }
 
     override func tearDown() {
@@ -46,14 +46,15 @@ class QuestionCreationTests: XCTestCase {
 
     func testErrorReturnedToDelegateIsNotErrorNotifiedByCommunicator() {
         sut.searchingForQuestionsFailed(with: sutUnderlyingError)
-        XCTAssertNotEqual(sutUnderlyingError, (sut.delegate as? MockStackOverflowManagerDelegate)?.error, "A delegate error shall be at the correct level of abstration.")
+        let delegateError = sut.delegate?.error
+        XCTAssertTrue(delegateError is StackOverflowError, "The delegate error shall be at the correct level of abstration.")
     }
 
     func testErrorReturnedToDelegateDocumentsUnderlyingError() {
         sut.searchingForQuestionsFailed(with: sutUnderlyingError)
-        let delegateError = (sut.delegate as? MockStackOverflowManagerDelegate)?.error
-        let delegateUndelyingError = delegateError?.userInfo[NSUnderlyingErrorKey]
-        XCTAssertEqual((delegateUndelyingError as? NSError), sutUnderlyingError, "The underlying error shall be available to client code.")
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertTrue(underlyingError is TestError)
     }
 
     func testQuestionJsonParssedTpQuestionBuilder() {
@@ -70,16 +71,20 @@ class QuestionCreationTests: XCTestCase {
         builder.errorToSet = sutUnderlyingError
         sut.questionBuilder = builder
         sut.received(questionsJson: "Fake JSON")
-        let delegateError = (sut.delegate as? MockStackOverflowManagerDelegate)?.error
-        let delegateUndelyingError = delegateError?.userInfo[NSUnderlyingErrorKey]
-        XCTAssertNotNil(delegateUndelyingError as? NSError, "The delegate shall have found out about an error when the builder returns nil.")
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertNotNil(underlyingError, "The delegate shall have found out about an error when the builder returns nil.")
     }
 }
 
-class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
-    var error: NSError? = nil
+enum TestError: Error {
+    case test
+}
 
-    func fetchingQuestionsFailed(error: NSError) {
+class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
+    var error: Error?
+
+    func fetchingQuestionsFailed(error: Error) {
         self.error = error
     }
 }
@@ -94,11 +99,13 @@ class MockStackOverflowCommunicator : StackOverflowCommunicator {
 class FakeQuestionBuilder : QuestionBuilder {
     var json: String = ""
     var arrayToReturn: [Question]? = nil
-    var errorToSet: NSError? = nil
+    var errorToSet: Error? = nil
 
-    func questionsFrom(json: String, error: inout NSError?) -> [Question]? {
+    func questionsFrom(json: String) throws -> [Question]? {
+        if let error = errorToSet {
+            throw error
+        }
         self.json = json
-        error = errorToSet
         return arrayToReturn
     }
 }
