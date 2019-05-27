@@ -54,10 +54,11 @@ struct StackOverflowManager {
         do {
             if try questionBuilder?.questionsFrom(json: questionsJson) == nil {
                 reportableError = StackOverflowError(underlyingError: nil, kind: .questionSearchError)
+                delegate?.fetchingQuestionsFailed(error: reportableError!)
             }
         } catch let underlyingError {
             reportableError = StackOverflowError(underlyingError: underlyingError, kind: .questionSearchError)
+            delegate?.fetchingQuestionsFailed(error: reportableError!)
         }
-        delegate?.fetchingQuestionsFailed(error: reportableError!)
     }
 }

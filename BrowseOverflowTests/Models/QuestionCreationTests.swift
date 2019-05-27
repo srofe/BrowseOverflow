@@ -84,6 +84,18 @@ class QuestionCreationTests: XCTestCase {
         let underlyingError = delegateError?.underlyingError
         XCTAssertNil(underlyingError, "The delegate can receive an error with no underlying error.")
     }
+
+    func testDelegateNotToldAboutErrorWhenQuestionsReceived() {
+        sutFakeQuestionBuilder.arrayToReturn = []
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sut.received(questionsJson: sutJsonString)
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        XCTAssertNil(delegateError, "The delegate shall not receive en error when questions are returned.")
+    }
+
+//    func testDelegateReceivesTheQuestionsDiscoveredByManager() {
+//        <#statements#>
+//    }
 }
 
 enum TestError: Error {
