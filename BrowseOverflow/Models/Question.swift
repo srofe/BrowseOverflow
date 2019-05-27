@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Question {
+struct Question : Equatable {
     var date: Date = Date()
     var score: Int = 0
     var title: String = ""

@@ -97,4 +97,18 @@ class QuestionTests: XCTestCase {
         let highIndex = sut.answers.firstIndex(of: highScoreAnswer)!
         XCTAssertTrue(highIndex < lowIndex, "The higher scoring answer shall shall come before the low scoring answer.")
     }
+
+    func testQuestionsWithSameDateAreEqual() {
+        sut.date = Date.distantPast
+        var otherQuestion = Question()
+        otherQuestion.date = Date.distantPast
+        XCTAssertEqual(sut, otherQuestion, "Two Questions with the same date shall be equal.")
+    }
+
+    func testQuestionsWithDifferentDatesShallNotBeEquall() {
+        sut.date = Date.distantPast
+        var otherQuestion = Question()
+        otherQuestion.date = Date.distantFuture
+        XCTAssertNotEqual(sut, otherQuestion, "Two Questions with different dates shall not be equal.")
+    }
 }
