@@ -113,4 +113,21 @@ class QuestionTests: XCTestCase {
         sutOtherQuestion.date = Date.distantFuture
         XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different dates shall not be equal.")
     }
+
+    func testQuestionsWithTheSameScoreAreTheSame() {
+        sut.date = Date.distantFuture
+        sut.score = 9
+        sutOtherQuestion.date = Date.distantFuture
+        sutOtherQuestion.score = 9
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same score shall be equal.")
+    }
+
+    func testQuestionsWithDifferentDatesAreDifferent() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertEqual(sut, sutOtherQuestion, "Before setting different scores, Questions must be equal.")
+        sut.score = 9
+        sutOtherQuestion.score = 8
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different scores shall not be equal.")
+    }
 }
