@@ -53,7 +53,6 @@ struct StackOverflowManager {
         var reportableError: StackOverflowError? = nil
         do {
             if try questionBuilder?.questionsFrom(json: questionsJson) == nil {
-                print("No questions found.")
                 reportableError = StackOverflowError(underlyingError: nil, kind: .questionSearchError)
             }
         } catch let underlyingError {

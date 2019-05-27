@@ -69,13 +69,20 @@ class QuestionCreationTests: XCTestCase {
     }
 
     func testDelegateNotifiedOfErrorWhenQuestionBuilderFails() {
-        sutFakeQuestionBuilder.arrayToReturn = nil
         sutFakeQuestionBuilder.errorToSet = sutUnderlyingError
         sut.questionBuilder = sutFakeQuestionBuilder
         sut.received(questionsJson: sutJsonString)
         let delegateError = sut.delegate?.error as? StackOverflowError
         let underlyingError = delegateError?.underlyingError
         XCTAssertNotNil(underlyingError, "The delegate shall have found out about an error when the builder returns nil.")
+    }
+
+    func testUnderlyingErrorCanBeNilIfQuestionsIsNil() {
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sut.received(questionsJson: sutJsonString)
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertNil(underlyingError, "The delegate can receive an error with no underlying error.")
     }
 }
 
