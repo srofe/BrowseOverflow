@@ -17,6 +17,7 @@ class QuestionCreationTests: XCTestCase {
     let sutJsonString = "Fake JSON"
     var sutUnderlyingError: Error!
     var sutFakeQuestionBuilder: FakeQuestionBuilder!
+    var sutQuestionArray: [Question]!
 
     override func setUp() {
         super.setUp()
@@ -25,9 +26,11 @@ class QuestionCreationTests: XCTestCase {
         sut.communicator = MockStackOverflowCommunicator()
         sutUnderlyingError = TestError.test
         sutFakeQuestionBuilder = FakeQuestionBuilder()
+        sutQuestionArray = [Question(date: Date(), score: 0, title: "Question Title", answers: [])]
     }
 
     override func tearDown() {
+        sutQuestionArray = nil
         sutFakeQuestionBuilder = nil
         sutUnderlyingError = nil
         sut = nil
@@ -86,16 +89,19 @@ class QuestionCreationTests: XCTestCase {
     }
 
     func testDelegateNotToldAboutErrorWhenQuestionsReceived() {
-        sutFakeQuestionBuilder.arrayToReturn = []
+        sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
         sut.questionBuilder = sutFakeQuestionBuilder
         sut.received(questionsJson: sutJsonString)
         let delegateError = sut.delegate?.error as? StackOverflowError
         XCTAssertNil(delegateError, "The delegate shall not receive en error when questions are returned.")
     }
 
-//    func testDelegateReceivesTheQuestionsDiscoveredByManager() {
-//        <#statements#>
-//    }
+    func testDelegateReceivesTheQuestionsDiscoveredByManager() {
+        sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sut.received(questionsJson: sutJsonString)
+        XCTAssertEqual(sut.delegate?.questions?.count, 1, "The Manager shall send its questions to the delegate.")
+    }
 }
 
 enum TestError: Error {
@@ -104,9 +110,14 @@ enum TestError: Error {
 
 class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
     var error: Error?
+    var questions: [Question]? = nil
 
     func fetchingQuestionsFailed(error: Error) {
         self.error = error
+    }
+
+    func didReceiveQuestions(questions: [Question]) {
+        self.questions = questions
     }
 }
 

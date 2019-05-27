@@ -10,7 +10,9 @@ import Foundation
 
 protocol StackOverflowManagerDelegate {
     var error: Error? { get set }
+    var questions: [Question]? { get }
     func fetchingQuestionsFailed(error: Error)
+    func didReceiveQuestions(questions: [Question])
 }
 
 protocol StackOverflowCommunicator {
@@ -52,7 +54,9 @@ struct StackOverflowManager {
     func received(questionsJson: String) {
         var reportableError: StackOverflowError? = nil
         do {
-            if try questionBuilder?.questionsFrom(json: questionsJson) == nil {
+            if let questions = try questionBuilder?.questionsFrom(json: questionsJson) {
+                delegate?.didReceiveQuestions(questions: questions)
+            } else {
                 reportableError = StackOverflowError(underlyingError: nil, kind: .questionSearchError)
                 delegate?.fetchingQuestionsFailed(error: reportableError!)
             }
