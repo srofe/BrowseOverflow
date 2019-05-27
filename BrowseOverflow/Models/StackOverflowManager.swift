@@ -45,7 +45,7 @@ struct StackOverflowManager {
         var error: NSError? = nil
         let questions = questionBuilder?.questionsFrom(json: questionsJson, error: &error)
         if (questions == nil) {
-            let userInfo = [NSUnderlyingErrorKey:error as Any]
+            let userInfo = [NSUnderlyingErrorKey:error]
             let reportableError = NSError(domain: StackOverflowManagerError,
                                           code: StackOverflowError.QuestionSearchCode.rawValue,
                                           userInfo:userInfo)
