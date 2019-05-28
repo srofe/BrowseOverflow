@@ -37,6 +37,9 @@ struct QuestionBuilder : QuestionBuilderProtocol {
 
     private func questionFrom(json: [String:Any]) -> Question {
         var question = Question()
+        let timeIntervalSince1970 = json["creation_date"] as? Double ?? 0
+        question.date = Date(timeIntervalSince1970: timeIntervalSince1970)
+        question.score = json["score"] as? Int ?? 0
         question.title = json["title"] as? String ?? ""
 
         return question

@@ -48,7 +48,9 @@ class QuestionBuilderTests: XCTestCase {
     func testQuestionCreatedFromJsonHasPropertiesFromJson() {
         let questions = try? sut.questionsFrom(json: questionJson())
         let question = questions?[0]
-        XCTAssertEqual(question?.title, "Why does Keychain Services return the wrong keychain content?", "")
+        XCTAssertEqual(question?.date.timeIntervalSince1970, 1273660706, "The QuestionBuilder shall extract the date from the JSON.")
+        XCTAssertEqual(question?.score, 2, "The QuestionBuilder shall extract the score from the JSON.")
+        XCTAssertEqual(question?.title, "Why does Keychain Services return the wrong keychain content?", "The QuestionBuilder shall extract the title from the JSON.")
     }
 }
 
