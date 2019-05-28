@@ -23,10 +23,9 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData!) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(jsonObject) else { throw QuestionBuilderError.invalidJson }
 
         if let _ = jsonObject["questions"] {
+            return [Question()]
         } else {
             throw QuestionBuilderError.missingData
         }
-
-        return nil
     }
 }
