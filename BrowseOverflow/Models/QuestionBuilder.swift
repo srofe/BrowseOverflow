@@ -10,6 +10,7 @@ import Foundation
 
 enum QuestionBuilderError : Error {
     case invalidJson
+    case missingData
 }
 
 protocol QuestionBuilderProtocol {
@@ -18,6 +19,13 @@ protocol QuestionBuilderProtocol {
 
 struct QuestionBuilder : QuestionBuilderProtocol {
     func questionsFrom(json: String) throws -> [Question]? {
+        let jsonData = json.data(using: .utf8)
+        if let jsonObject = try? JSONSerialization.jsonObject(with: jsonData!) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(jsonObject) {
+            if let _ = jsonObject["questions"] {
+            } else {
+                throw QuestionBuilderError.missingData
+            }
+        }
         throw QuestionBuilderError.invalidJson
     }
 }
