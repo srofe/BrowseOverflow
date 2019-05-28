@@ -9,7 +9,7 @@
 import XCTest
 @testable import BrowseOverflow
 
-class QuestionCreationTests: XCTestCase {
+class QuestionCreationWorkflowTests: XCTestCase {
 
     // The System Under Test - a StackOverFlowManager
     var sut: StackOverflowManager!
