@@ -135,7 +135,7 @@ class MockStackOverflowCommunicator : StackOverflowCommunicator {
     }
 }
 
-class FakeQuestionBuilder : QuestionBuilder {
+class FakeQuestionBuilder : QuestionBuilderProtocol {
     var json: String = ""
     var arrayToReturn: [Question]? = nil
     var errorToSet: Error? = nil

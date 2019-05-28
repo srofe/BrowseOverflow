@@ -19,10 +19,6 @@ protocol StackOverflowCommunicator {
     func searchForQuestions(with tag: String)
 }
 
-protocol QuestionBuilder {
-    func questionsFrom(json: String) throws -> [Question]?
-}
-
 fileprivate let StackOverflowManagerError = "StackOverflowManagerError"
 
 struct StackOverflowError: Error {
@@ -40,7 +36,7 @@ enum StackOverflowErrorCode: Int {
 struct StackOverflowManager {
     var delegate: StackOverflowManagerDelegate? = nil
     var communicator: StackOverflowCommunicator? = nil
-    var questionBuilder: QuestionBuilder? = nil
+    var questionBuilder: QuestionBuilderProtocol? = nil
 
     func fetchQuestions(on topic: Topic) {
         communicator?.searchForQuestions(with: topic.tag)
