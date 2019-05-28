@@ -68,6 +68,12 @@ class QuestionTests: XCTestCase {
         XCTAssertEqual(sut.answers.count, 0, "The default number of Answers in a question shall be 0.")
     }
 
+    func testQuestionHasAnAsker() {
+        let asker = Person(name: "Joe Bloggs", avatarUrl: URL(string: "http://example.com/avatar.png")!)
+        sut.asker = asker
+        XCTAssertEqual(sut.asker, asker, "A Question shall have a Person who asked the questin.")
+    }
+
     func testQuestionCanAddAnswers() {
         let answer = Answer()
         sut.add(answer: answer)
