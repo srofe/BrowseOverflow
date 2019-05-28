@@ -14,12 +14,16 @@ class QuestionTests: XCTestCase {
     // The System Under Test - a Question.
     var sut: Question!
 
+    var sutOtherQuestion: Question!
+
     override func setUp() {
         super.setUp()
         sut = Question()
+        sutOtherQuestion = Question()
     }
 
     override func tearDown() {
+        sutOtherQuestion = nil
         sut = nil
         super.tearDown()
     }
@@ -96,5 +100,80 @@ class QuestionTests: XCTestCase {
         let lowIndex = sut.answers.firstIndex(of: lowScoreAnswer)!
         let highIndex = sut.answers.firstIndex(of: highScoreAnswer)!
         XCTAssertTrue(highIndex < lowIndex, "The higher scoring answer shall shall come before the low scoring answer.")
+    }
+
+    func testQuestionsWithSameDateAreEqual() {
+        sut.date = Date.distantPast
+        sutOtherQuestion.date = Date.distantPast
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same date shall be equal.")
+    }
+
+    func testQuestionsWithDifferentDatesShallNotBeEquall() {
+        sut.date = Date.distantPast
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different dates shall not be equal.")
+    }
+
+    func testQuestionsWithTheSameScoreAreTheSame() {
+        sut.date = Date.distantFuture
+        sut.score = 9
+        sutOtherQuestion.date = Date.distantFuture
+        sutOtherQuestion.score = 9
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same score shall be equal.")
+    }
+
+    func testQuestionsWithDifferentDatesAreDifferent() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertEqual(sut, sutOtherQuestion, "Before setting different scores, Questions must be equal.")
+        sut.score = 9
+        sutOtherQuestion.score = 8
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different scores shall not be equal.")
+    }
+
+    func testQuestionsWithTheSameTitleAreEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        sut.title = "Question title"
+        sutOtherQuestion.title = "Question title"
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same title shall be equal.")
+    }
+
+    func testQuestionsWithDifferentTitlesAreNotEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertEqual(sut, sutOtherQuestion, "Before setting different titles, Questions must be equal.")
+        sut.title = "Question title"
+        sutOtherQuestion.title = "Other title"
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with the same title shall be equal.")
+
+    }
+
+    func testQuestionsWithTheSameAnswerArrayAreEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        let answerOne = Answer()
+        let answerTwo = Answer()
+        sut.add(answer: answerOne)
+        sut.add(answer: answerTwo)
+        sutOtherQuestion.add(answer: answerOne)
+        sutOtherQuestion.add(answer: answerTwo)
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same answers shall be the same.")
+    }
+
+    func testQuestionsWithDifferentAnswerArrayAreNotEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertEqual(sut, sutOtherQuestion, "Before setting different answers, Questions must be equal.")
+        let answerOne = Answer()
+        var answerTwo = Answer()
+        answerTwo.text = "Answer Two"
+        var answerThree = Answer()
+        answerThree.text = "Answer Three"
+        sut.add(answer: answerOne)
+        sut.add(answer: answerTwo)
+        sutOtherQuestion.add(answer: answerOne)
+        sutOtherQuestion.add(answer: answerThree)
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different answers shall not be the same.")
     }
 }
