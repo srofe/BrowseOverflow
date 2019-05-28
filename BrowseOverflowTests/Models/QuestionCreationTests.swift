@@ -102,6 +102,13 @@ class QuestionCreationTests: XCTestCase {
         sut.received(questionsJson: sutJsonString)
         XCTAssertEqual(sut.delegate?.questions, sutQuestionArray, "The Manager shall send its questions to the delegate.")
     }
+
+    func testEmptyArrayCanBePassedToDelegate() {
+        sutFakeQuestionBuilder.arrayToReturn = []
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sut.received(questionsJson: sutJsonString)
+        XCTAssertEqual(sut.delegate?.questions, [], "Providing an empty array to the delegate shall not be an error.")
+    }
 }
 
 enum TestError: Error {
