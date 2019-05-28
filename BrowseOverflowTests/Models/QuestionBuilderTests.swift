@@ -44,6 +44,12 @@ class QuestionBuilderTests: XCTestCase {
         let questions = try? sut.questionsFrom(json: questionJson())
         XCTAssertEqual(questions?.count, 1, "The QuestionBuilder shall create one Question object from JSON containing one question.")
     }
+
+    func testQuestionCreatedFromJsonHasPropertiesFromJson() {
+        let questions = try? sut.questionsFrom(json: questionJson())
+        let question = questions?[0]
+        XCTAssertEqual(question?.title, "Why does Keychain Services return the wrong keychain content?", "")
+    }
 }
 
 extension QuestionBuilderTests {
