@@ -100,7 +100,7 @@ class QuestionCreationTests: XCTestCase {
         sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
         sut.questionBuilder = sutFakeQuestionBuilder
         sut.received(questionsJson: sutJsonString)
-        XCTAssertEqual(sut.delegate?.questions?.count, 1, "The Manager shall send its questions to the delegate.")
+        XCTAssertEqual(sut.delegate?.questions, sutQuestionArray, "The Manager shall send its questions to the delegate.")
     }
 }
 
