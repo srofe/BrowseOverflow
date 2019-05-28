@@ -47,22 +47,23 @@ struct StackOverflowManager {
     }
 
     func searchingForQuestionsFailed(with error: Error) {
-        let reportableError = StackOverflowError(underlyingError: error, kind: .questionSearchError)
-        delegate?.fetchingQuestionsFailed(error: reportableError)
+        tellDelegateAboutError(underlyingError: error)
     }
 
     func received(questionsJson: String) {
-        var reportableError: StackOverflowError? = nil
         do {
             if let questions = try questionBuilder?.questionsFrom(json: questionsJson) {
                 delegate?.didReceiveQuestions(questions: questions)
             } else {
-                reportableError = StackOverflowError(underlyingError: nil, kind: .questionSearchError)
-                delegate?.fetchingQuestionsFailed(error: reportableError!)
+                tellDelegateAboutError(underlyingError: nil)
             }
         } catch let underlyingError {
-            reportableError = StackOverflowError(underlyingError: underlyingError, kind: .questionSearchError)
-            delegate?.fetchingQuestionsFailed(error: reportableError!)
+            tellDelegateAboutError(underlyingError: underlyingError)
         }
+    }
+
+    private func tellDelegateAboutError(underlyingError: Error?) {
+        let reportableError = StackOverflowError(underlyingError: underlyingError, kind: .questionSearchError)
+        delegate?.fetchingQuestionsFailed(error: reportableError)
     }
 }
