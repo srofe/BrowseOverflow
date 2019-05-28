@@ -23,4 +23,8 @@ class QuestionBuilderTests: XCTestCase {
         sut = nil
         super.tearDown()
     }
+
+    func testErrorThrownWhenStringIsNotJson() {
+        XCTAssertThrowsError(try sut.questionsFrom(json: "Not JSON"), "A QuestionBuilder shall raise an exception if passed an non-JSON string.")
+    }
 }

@@ -8,12 +8,16 @@
 
 import Foundation
 
+enum QuestionBuilderError : Error {
+    case invalidJson
+}
+
 protocol QuestionBuilderProtocol {
     func questionsFrom(json: String) throws -> [Question]?
 }
 
 struct QuestionBuilder : QuestionBuilderProtocol {
     func questionsFrom(json: String) throws -> [Question]? {
-        return nil
+        throw QuestionBuilderError.invalidJson
     }
 }
