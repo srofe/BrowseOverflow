@@ -148,4 +148,32 @@ class QuestionTests: XCTestCase {
         XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with the same title shall be equal.")
 
     }
+
+    func testQuestionsWithTheSameAnswerArrayAreEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        let answerOne = Answer()
+        let answerTwo = Answer()
+        sut.add(answer: answerOne)
+        sut.add(answer: answerTwo)
+        sutOtherQuestion.add(answer: answerOne)
+        sutOtherQuestion.add(answer: answerTwo)
+        XCTAssertEqual(sut, sutOtherQuestion, "Two Questions with the same answers shall be the same.")
+    }
+
+    func testQuestionsWithDifferentAnswerArrayAreNotEqual() {
+        sut.date = Date.distantFuture
+        sutOtherQuestion.date = Date.distantFuture
+        XCTAssertEqual(sut, sutOtherQuestion, "Before setting different answers, Questions must be equal.")
+        let answerOne = Answer()
+        var answerTwo = Answer()
+        answerTwo.text = "Answer Two"
+        var answerThree = Answer()
+        answerThree.text = "Answer Three"
+        sut.add(answer: answerOne)
+        sut.add(answer: answerTwo)
+        sutOtherQuestion.add(answer: answerOne)
+        sutOtherQuestion.add(answer: answerThree)
+        XCTAssertNotEqual(sut, sutOtherQuestion, "Two Questions with different answers shall not be the same.")
+    }
 }
