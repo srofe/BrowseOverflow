@@ -39,6 +39,7 @@ struct StackOverflowManager {
     var delegate: StackOverflowManagerDelegate? = nil
     var communicator: StackOverflowCommunicator? = nil
     var questionBuilder: QuestionBuilderProtocol? = nil
+    var questionNeedingBody: Question? = nil
 
     func fetchQuestions(on topic: Topic) {
         communicator?.searchForQuestions(with: topic.tag)
@@ -48,7 +49,8 @@ struct StackOverflowManager {
         tellDelegateAboutError(kind: .questionSearch, underlyingError: error)
     }
 
-    func fetchBody(for question: Question) {
+    mutating func fetchBody(for question: Question) {
+        questionNeedingBody = question
         communicator?.downloadInformationQuestion(id: question.id)
     }
 
@@ -68,8 +70,9 @@ struct StackOverflowManager {
         }
     }
 
-    func received(questionBodyJson: String) {
-        questionBuilder?.questionBody(from: questionBodyJson)
+    mutating func received(questionBodyJson: String) {
+        questionBuilder?.questionBody(for: questionNeedingBody, from: questionBodyJson)
+        self.questionNeedingBody = nil
     }
 
     private func tellDelegateAboutError(kind: StackOverflowError.ErrorKind, underlyingError: Error?) {

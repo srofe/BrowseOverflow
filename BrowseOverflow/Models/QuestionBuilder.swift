@@ -15,7 +15,7 @@ enum QuestionBuilderError : Error {
 
 protocol QuestionBuilderProtocol {
     func questions(from json: String) throws -> [Question]?
-    func questionBody(from json: String)
+    func questionBody(for question: Question?, from json: String)
 }
 
 struct QuestionBuilder : QuestionBuilderProtocol {
@@ -37,7 +37,7 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         }
     }
 
-    func questionBody(from json: String) {
+    func questionBody(for question: Question?, from json: String) {
         return
     }
 
