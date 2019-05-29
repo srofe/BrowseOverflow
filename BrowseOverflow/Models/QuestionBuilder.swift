@@ -22,11 +22,11 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         var questionsToReturn: [Question] = []
 
         let jsonData = json.data(using: .utf8)
-        guard let jsonObject = try? JSONSerialization.jsonObject(with: jsonData!) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(jsonObject) else { throw QuestionBuilderError.invalidJson }
+        guard let queryDictionary = try? JSONSerialization.jsonObject(with: jsonData!) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(queryDictionary) else { throw QuestionBuilderError.invalidJson }
 
-        if let questions = jsonObject["questions"] {
-            for jsonQuestion in (questions as? [Dictionary<String,Any>])! {
-                let question = questionFrom(json: jsonQuestion)
+        if let questions = queryDictionary["questions"] {
+            for questionDictionary in (questions as? [Dictionary<String,Any>])! {
+                let question = questionFrom(questionDictionary: questionDictionary)
                 questionsToReturn.append(question)
             }
             return questionsToReturn
@@ -35,13 +35,13 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         }
     }
 
-    private func questionFrom(json: [String:Any]) -> Question {
+    private func questionFrom(questionDictionary: [String:Any]) -> Question {
         var question = Question()
-        let timeIntervalSince1970 = json["creation_date"] as? Double ?? 0
+        let timeIntervalSince1970 = questionDictionary["creation_date"] as? Double ?? 0
         question.date = Date(timeIntervalSince1970: timeIntervalSince1970)
-        question.score = json["score"] as? Int ?? 0
-        question.title = json["title"] as? String ?? ""
-        if let ownerDictionary = json["owner"] as? Dictionary<String,Any> {
+        question.score = questionDictionary["score"] as? Int ?? 0
+        question.title = questionDictionary["title"] as? String ?? ""
+        if let ownerDictionary = questionDictionary["owner"] as? Dictionary<String,Any> {
             question.asker = personFrom(ownerDictionary: ownerDictionary)
         }
 
