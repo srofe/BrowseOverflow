@@ -37,6 +37,7 @@ struct QuestionBuilder : QuestionBuilderProtocol {
 
     private func questionFrom(questionDictionary: [String:Any]) -> Question {
         var question = Question()
+        question.id = questionDictionary["question_id"] as? Int ?? 0
         let timeIntervalSince1970 = questionDictionary["creation_date"] as? Double ?? 0
         question.date = Date(timeIntervalSince1970: timeIntervalSince1970)
         question.score = questionDictionary["score"] as? Int ?? 0
