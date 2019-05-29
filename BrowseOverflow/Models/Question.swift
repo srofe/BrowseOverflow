@@ -13,6 +13,7 @@ struct Question : Equatable {
     var date: Date = Date()
     var score: Int = 0
     var title: String = ""
+    var body: String? = nil
     var asker: Person? = nil
     private (set) var answers: [Answer] = []
 
