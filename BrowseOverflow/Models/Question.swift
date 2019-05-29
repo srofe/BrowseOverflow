@@ -9,6 +9,7 @@
 import Foundation
 
 struct Question : Equatable {
+    var id: Int = -1
     var date: Date = Date()
     var score: Int = 0
     var title: String = ""

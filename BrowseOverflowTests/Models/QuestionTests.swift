@@ -28,6 +28,15 @@ class QuestionTests: XCTestCase {
         super.tearDown()
     }
 
+    func testQuestionHasAnId() {
+        XCTAssertEqual(sut.id, -1, "A Question shall have an ID with a default value of -1.")
+    }
+
+    func testQuestionIdCanBeSet() {
+        sut.id = 794054
+        XCTAssertEqual(sut.id, 794054, "A Question shall allow it's ID to be set.")
+    }
+
     func testQuestionDateCanBeSet() {
         let date = Date.distantPast
         sut.date = date
