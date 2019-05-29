@@ -55,6 +55,11 @@ class QuestionBuilderTests: XCTestCase {
         XCTAssertEqual(question?.asker?.name, asker.name, "The QuestionBuilder shall extract the askers name.")
         XCTAssertEqual(question?.asker?.avatarUrl, asker.avatarUrl, "The QuestionBuilder shall extract the askers avarar URL.")
     }
+
+    func testQuestionCreatedFromEmptyObjectIsStillValidObject() {
+        let questions = try? sut.questionsFrom(json: "{ \"questions\": [ { } ] }")
+        XCTAssertEqual(questions?.count, 1, "A QuestionBuilder shall accept an empty question.")
+    }
 }
 
 extension QuestionBuilderTests {
