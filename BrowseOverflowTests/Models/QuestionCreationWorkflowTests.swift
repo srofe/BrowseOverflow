@@ -109,6 +109,11 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.received(questionsJson: sutJsonString)
         XCTAssertEqual(sut.delegate?.questions, [], "Providing an empty array to the delegate shall not be an error.")
     }
+
+    func testAskingForQuestionsBodyMeansRequestingData() {
+        sut.fetchBody(for: Question())
+        XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchBody, "The communicator shall be asked to fetch the body of a question.")
+    }
 }
 
 enum TestError: Error {
@@ -130,8 +135,12 @@ class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
 
 class MockStackOverflowCommunicator : StackOverflowCommunicator {
     var wasAskedToFetchQuestions = false
+    var wasAskedToFetchBody = false
     func searchForQuestions(with tag: String) {
         wasAskedToFetchQuestions = true
+    }
+    func downloadInformationQuestion(id: Int) {
+        wasAskedToFetchBody = true
     }
 }
 

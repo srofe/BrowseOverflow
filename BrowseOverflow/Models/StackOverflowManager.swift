@@ -17,6 +17,7 @@ protocol StackOverflowManagerDelegate {
 
 protocol StackOverflowCommunicator {
     func searchForQuestions(with tag: String)
+    func downloadInformationQuestion(id: Int)
 }
 
 fileprivate let StackOverflowManagerError = "StackOverflowManagerError"
@@ -44,6 +45,10 @@ struct StackOverflowManager {
 
     func searchingForQuestionsFailed(with error: Error) {
         tellDelegateAboutError(underlyingError: error)
+    }
+
+    func fetchBody(for question: Question) {
+        communicator?.downloadInformationQuestion(id: question.id)
     }
 
     func received(questionsJson: String) {
