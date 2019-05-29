@@ -125,6 +125,9 @@ class QuestionCreationWorkflowTests: XCTestCase {
 
     func testManagerPassesRetrievedQuestionBodyToQuestionBuilder() {
         sut.questionBuilder = sutFakeQuestionBuilder
+        var question = Question()
+        question.title = "A question to ask."
+        sut.fetchBody(for: question)
         sut.received(questionBodyJson: "Fake JSON")
         XCTAssertEqual((sut.questionBuilder as? FakeQuestionBuilder)?.json, "Fake JSON", "The Manager shall pass the question body JSON string to the QuestionBuilder.")
     }
@@ -190,7 +193,7 @@ class FakeQuestionBuilder : QuestionBuilderProtocol {
         return arrayToReturn
     }
 
-    func questionBody(for question: Question?, from json: String) {
+    func questionBody(for question: Question, from json: String) {
         self.questionToFill = question
         self.json = json
     }
