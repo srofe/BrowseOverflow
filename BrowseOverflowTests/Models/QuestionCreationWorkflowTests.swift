@@ -122,6 +122,12 @@ class QuestionCreationWorkflowTests: XCTestCase {
         XCTAssertEqual(delegateError?.kind, .questionBodyFetch, "The error reported when fetching a question body shall be a questionBodyFetch error.")
         XCTAssertNotNil(underlyingError, "The delegate shall be notified of any error when fetching a Question body.")
     }
+
+    func testManagerPassesRetrievedQuestionBodyToQuestionBuilder() {
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sut.received(questionBodyJson: "Fake JSON")
+        XCTAssertEqual((sut.questionBuilder as? FakeQuestionBuilder)?.json, "Fake JSON", "The Manager shall pass the question body JSON string to the QuestionBuilder.")
+    }
 }
 
 enum TestError: Error {
@@ -157,11 +163,15 @@ class FakeQuestionBuilder : QuestionBuilderProtocol {
     var arrayToReturn: [Question]? = nil
     var errorToSet: Error? = nil
 
-    func questionsFrom(json: String) throws -> [Question]? {
+    func questions(from json: String) throws -> [Question]? {
         if let error = errorToSet {
             throw error
         }
         self.json = json
         return arrayToReturn
+    }
+
+    func questionBody(from json: String) {
+        self.json = json
     }
 }

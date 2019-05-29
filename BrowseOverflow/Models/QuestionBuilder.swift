@@ -14,11 +14,13 @@ enum QuestionBuilderError : Error {
 }
 
 protocol QuestionBuilderProtocol {
-    func questionsFrom(json: String) throws -> [Question]?
+    func questions(from json: String) throws -> [Question]?
+    func questionBody(from json: String)
 }
 
 struct QuestionBuilder : QuestionBuilderProtocol {
-    func questionsFrom(json: String) throws -> [Question]? {
+
+    func questions(from json: String) throws -> [Question]? {
         var questionsToReturn: [Question] = []
 
         let jsonData = json.data(using: .utf8)
@@ -33,6 +35,10 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         } else {
             throw QuestionBuilderError.missingData
         }
+    }
+
+    func questionBody(from json: String) {
+        return
     }
 
     private func questionFrom(questionDictionary: [String:Any]) -> Question {

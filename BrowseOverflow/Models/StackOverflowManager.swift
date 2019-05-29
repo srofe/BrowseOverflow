@@ -58,7 +58,7 @@ struct StackOverflowManager {
 
     func received(questionsJson: String) {
         do {
-            if let questions = try questionBuilder?.questionsFrom(json: questionsJson) {
+            if let questions = try questionBuilder?.questions(from: questionsJson) {
                 delegate?.didReceiveQuestions(questions: questions)
             } else {
                 tellDelegateAboutError(kind: .questionSearch, underlyingError: nil)
@@ -66,6 +66,10 @@ struct StackOverflowManager {
         } catch let underlyingError {
             tellDelegateAboutError(kind: .questionSearch, underlyingError: underlyingError)
         }
+    }
+
+    func received(questionBodyJson: String) {
+        questionBuilder?.questionBody(from: questionBodyJson)
     }
 
     private func tellDelegateAboutError(kind: StackOverflowError.ErrorKind, underlyingError: Error?) {

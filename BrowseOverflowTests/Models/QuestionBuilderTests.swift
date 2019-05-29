@@ -29,24 +29,24 @@ class QuestionBuilderTests: XCTestCase {
     }
 
     func testErrorThrownWhenStringIsInvalidJson() {
-        XCTAssertThrowsError(try sut.questionsFrom(json: sutNotJson), "A QuestionBuilder shall raise an exception if passed an non-JSON string.") { error in
+        XCTAssertThrowsError(try sut.questions(from: sutNotJson), "A QuestionBuilder shall raise an exception if passed an non-JSON string.") { error in
             XCTAssertEqual(error as? QuestionBuilderError, QuestionBuilderError.invalidJson, "A QuestionBuilder shall set the error type to invalid JSON if the JSON is not valid.")
         }
     }
 
     func testErrorThrownWhenJsonHasNoQuestions() {
-        XCTAssertThrowsError(try sut.questionsFrom(json: sutValidJson), "A QuestionBuilder shall throw a QuestionsBuilder error if question data is missing.") { error in
+        XCTAssertThrowsError(try sut.questions(from: sutValidJson), "A QuestionBuilder shall throw a QuestionsBuilder error if question data is missing.") { error in
             XCTAssertEqual(error as? QuestionBuilderError, QuestionBuilderError.missingData, "A QuestionBuilder shall set the error type to missing data if the JSON is valid and there is no question data.")
         }
     }
 
     func testJsonWithOneQuestionsReturnsOneQuestionObject() {
-        let questions = try? sut.questionsFrom(json: questionJson())
+        let questions = try? sut.questions(from: questionJson())
         XCTAssertEqual(questions?.count, 1, "The QuestionBuilder shall create one Question object from JSON containing one question.")
     }
 
     func testQuestionCreatedFromJsonHasPropertiesFromJson() {
-        let questions = try? sut.questionsFrom(json: questionJson())
+        let questions = try? sut.questions(from: questionJson())
         let question = questions?[0]
         let asker = Person(name: "Graham Lee", avatarUrl: URL(string: "http://www.gravatar.com/avatar/563290c0c1b776a315b36e863b388a0c")!)
         XCTAssertEqual(question?.id, 2817980, "The QuestionBuilder shall extract the id from the JSON.")
@@ -58,7 +58,7 @@ class QuestionBuilderTests: XCTestCase {
     }
 
     func testQuestionCreatedFromEmptyObjectIsStillValidObject() {
-        let questions = try? sut.questionsFrom(json: "{ \"questions\": [ { } ] }")
+        let questions = try? sut.questions(from: "{ \"questions\": [ { } ] }")
         XCTAssertEqual(questions?.count, 1, "A QuestionBuilder shall accept an empty question.")
     }
 }
