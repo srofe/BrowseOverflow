@@ -41,7 +41,19 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         question.date = Date(timeIntervalSince1970: timeIntervalSince1970)
         question.score = json["score"] as? Int ?? 0
         question.title = json["title"] as? String ?? ""
+        if let ownerDictionary = json["owner"] as? Dictionary<String,Any> {
+            question.asker = personFrom(ownerDictionary: ownerDictionary)
+        }
 
         return question
+    }
+
+    private func personFrom(ownerDictionary: [String:Any]) -> Person {
+        let personName = ownerDictionary["display_name"] as? String ?? ""
+        let emailHash = ownerDictionary["email_hash"] as? String ?? ""
+        let urlString = "http://www.gravatar.com/avatar/\(emailHash)"
+        let person = Person(name: personName, avatarUrl: URL(string: urlString)!)
+
+        return person
     }
 }
