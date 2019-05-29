@@ -26,7 +26,7 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.communicator = MockStackOverflowCommunicator()
         sutUnderlyingError = TestError.test
         sutFakeQuestionBuilder = FakeQuestionBuilder()
-        sutQuestionArray = [Question(date: Date(), score: 0, title: "Question Title", answers: [])]
+        sutQuestionArray = [Question()]
     }
 
     override func tearDown() {
