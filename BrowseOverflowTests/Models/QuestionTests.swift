@@ -77,6 +77,12 @@ class QuestionTests: XCTestCase {
         XCTAssertNil(sut.body, "A Question shall have a body with a default value of nil.")
     }
 
+    func testQuestionBodyCanBeSet() {
+        let body = "I am trying to figure out if iPohones dream of electric sheep."
+        sut.body = body
+        XCTAssertEqual(sut.body, body, "A Question shall allow it's body to be set.")
+    }
+
     func testQuestionDefaultAnswersIsEmpty() {
         XCTAssertEqual(sut.answers.count, 0, "The default number of Answers in a question shall be 0.")
     }
