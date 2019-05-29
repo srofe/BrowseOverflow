@@ -137,6 +137,15 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.received(questionBodyJson: "Fake JSON")
         XCTAssertEqual((sut.questionBuilder as? FakeQuestionBuilder)?.questionToFill, question, "The Manager shall bass the question to be filled to the QuestionBuilder.")
     }
+
+    func testManagerSetsQuestionNeedingBodyToNilWhenBodyReceived() {
+        sut.questionBuilder = sutFakeQuestionBuilder
+        var question = Question()
+        question.title = "A question to ask."
+        sut.fetchBody(for: question)
+        sut.received(questionBodyJson: "Fake JSON")
+        XCTAssertNil(sut.questionNeedingBody, "The question needing a body shall be set to nil once the body has been received.")
+    }
 }
 
 enum TestError: Error {
