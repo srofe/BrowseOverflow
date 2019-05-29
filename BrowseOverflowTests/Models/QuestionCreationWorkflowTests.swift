@@ -18,18 +18,24 @@ class QuestionCreationWorkflowTests: XCTestCase {
     var sutUnderlyingError: Error!
     var sutFakeQuestionBuilder: FakeQuestionBuilder!
     var sutQuestionArray: [Question]!
+    var sutQuestion: Question!
 
     override func setUp() {
         super.setUp()
         sut = StackOverflowManager()
         sut.delegate = MockStackOverflowManagerDelegate()
         sut.communicator = MockStackOverflowCommunicator()
-        sutUnderlyingError = TestError.test
         sutFakeQuestionBuilder = FakeQuestionBuilder()
         sutQuestionArray = [Question()]
+        sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
+        sut.questionBuilder = sutFakeQuestionBuilder
+        sutUnderlyingError = TestError.test
+        sutQuestion = Question()
+        sutQuestion.title = "A question to ask."
     }
 
     override func tearDown() {
+        sutQuestion = nil
         sutQuestionArray = nil
         sutFakeQuestionBuilder = nil
         sutUnderlyingError = nil
@@ -65,7 +71,6 @@ class QuestionCreationWorkflowTests: XCTestCase {
     }
 
     func testQuestionJsonParssedTpQuestionBuilder() {
-        sut.questionBuilder = sutFakeQuestionBuilder
         sut.received(questionsJson: sutJsonString)
         let fakeJsonFromBuilder = (sut.questionBuilder as? FakeQuestionBuilder)?.json
         XCTAssertEqual(fakeJsonFromBuilder, sutJsonString, "The downloaded JSON shall be sent to the builder.")
@@ -81,7 +86,6 @@ class QuestionCreationWorkflowTests: XCTestCase {
     }
 
     func testUnderlyingErrorCanBeNilIfQuestionsIsNil() {
-        sut.questionBuilder = sutFakeQuestionBuilder
         sut.received(questionsJson: sutJsonString)
         let delegateError = sut.delegate?.error as? StackOverflowError
         let underlyingError = delegateError?.underlyingError
@@ -89,16 +93,12 @@ class QuestionCreationWorkflowTests: XCTestCase {
     }
 
     func testDelegateNotToldAboutErrorWhenQuestionsReceived() {
-        sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
-        sut.questionBuilder = sutFakeQuestionBuilder
         sut.received(questionsJson: sutJsonString)
         let delegateError = sut.delegate?.error as? StackOverflowError
         XCTAssertNil(delegateError, "The delegate shall not receive en error when questions are returned.")
     }
 
     func testDelegateReceivesTheQuestionsDiscoveredByManager() {
-        sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
-        sut.questionBuilder = sutFakeQuestionBuilder
         sut.received(questionsJson: sutJsonString)
         XCTAssertEqual(sut.delegate?.questions, sutQuestionArray, "The Manager shall send its questions to the delegate.")
     }
@@ -111,7 +111,7 @@ class QuestionCreationWorkflowTests: XCTestCase {
     }
 
     func testAskingForQuestionsBodyMeansRequestingData() {
-        sut.fetchBody(for: Question())
+        sut.fetchBody(for: sutQuestion)
         XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchBody, "The communicator shall be asked to fetch the body of a question.")
     }
 
@@ -124,28 +124,19 @@ class QuestionCreationWorkflowTests: XCTestCase {
     }
 
     func testManagerPassesRetrievedQuestionBodyToQuestionBuilder() {
-        sut.questionBuilder = sutFakeQuestionBuilder
-        var question = Question()
-        question.title = "A question to ask."
-        sut.fetchBody(for: question)
+        sut.fetchBody(for: sutQuestion)
         sut.received(questionBodyJson: "Fake JSON")
         XCTAssertEqual((sut.questionBuilder as? FakeQuestionBuilder)?.json, "Fake JSON", "The Manager shall pass the question body JSON string to the QuestionBuilder.")
     }
 
     func testManagerPassesQuestionItWasSentToQuestionBuilder() {
-        sut.questionBuilder = sutFakeQuestionBuilder
-        var question = Question()
-        question.title = "A question to ask."
-        sut.fetchBody(for: question)
+        sut.fetchBody(for: sutQuestion)
         sut.received(questionBodyJson: "Fake JSON")
-        XCTAssertEqual((sut.questionBuilder as? FakeQuestionBuilder)?.questionToFill, question, "The Manager shall bass the question to be filled to the QuestionBuilder.")
+        XCTAssertEqual((sut.questionBuilder as? FakeQuestionBuilder)?.questionToFill, sutQuestion, "The Manager shall bass the question to be filled to the QuestionBuilder.")
     }
 
     func testManagerSetsQuestionNeedingBodyToNilWhenBodyReceived() {
-        sut.questionBuilder = sutFakeQuestionBuilder
-        var question = Question()
-        question.title = "A question to ask."
-        sut.fetchBody(for: question)
+        sut.fetchBody(for: sutQuestion)
         sut.received(questionBodyJson: "Fake JSON")
         XCTAssertNil(sut.questionNeedingBody, "The question needing a body shall be set to nil once the body has been received.")
     }
