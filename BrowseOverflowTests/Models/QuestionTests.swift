@@ -74,6 +74,10 @@ class QuestionTests: XCTestCase {
         XCTAssertEqual(sut.asker, asker, "A Question shall have a Person who asked the questin.")
     }
 
+    func testDefaultAskerIsNil() {
+        XCTAssertNil(sut.asker, "The default asker for a Question shall be nil.")
+    }
+
     func testQuestionCanAddAnswers() {
         let answer = Answer()
         sut.add(answer: answer)
