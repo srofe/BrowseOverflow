@@ -24,7 +24,8 @@ fileprivate let StackOverflowManagerError = "StackOverflowManagerError"
 
 struct StackOverflowError: Error {
     enum ErrorKind {
-        case questionSearchError
+        case questionSearch
+        case questionBodyFetch
     }
     let underlyingError: Error?
     let kind: ErrorKind
@@ -44,11 +45,15 @@ struct StackOverflowManager {
     }
 
     func searchingForQuestionsFailed(with error: Error) {
-        tellDelegateAboutError(underlyingError: error)
+        tellDelegateAboutError(kind: .questionSearch, underlyingError: error)
     }
 
     func fetchBody(for question: Question) {
         communicator?.downloadInformationQuestion(id: question.id)
+    }
+
+    func fetchingQuestionFailed(with error: Error) {
+        tellDelegateAboutError(kind: .questionBodyFetch, underlyingError: error)
     }
 
     func received(questionsJson: String) {
@@ -56,15 +61,15 @@ struct StackOverflowManager {
             if let questions = try questionBuilder?.questionsFrom(json: questionsJson) {
                 delegate?.didReceiveQuestions(questions: questions)
             } else {
-                tellDelegateAboutError(underlyingError: nil)
+                tellDelegateAboutError(kind: .questionSearch, underlyingError: nil)
             }
         } catch let underlyingError {
-            tellDelegateAboutError(underlyingError: underlyingError)
+            tellDelegateAboutError(kind: .questionSearch, underlyingError: underlyingError)
         }
     }
 
-    private func tellDelegateAboutError(underlyingError: Error?) {
-        let reportableError = StackOverflowError(underlyingError: underlyingError, kind: .questionSearchError)
+    private func tellDelegateAboutError(kind: StackOverflowError.ErrorKind, underlyingError: Error?) {
+        let reportableError = StackOverflowError(underlyingError: underlyingError, kind: kind)
         delegate?.fetchingQuestionsFailed(error: reportableError)
     }
 }

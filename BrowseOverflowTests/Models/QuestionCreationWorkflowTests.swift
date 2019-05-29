@@ -114,6 +114,14 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.fetchBody(for: Question())
         XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchBody, "The communicator shall be asked to fetch the body of a question.")
     }
+
+    func testDelegateNotifiedOfFailureToFetchQuestion() {
+        sut.fetchingQuestionFailed(with: sutUnderlyingError)
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertEqual(delegateError?.kind, .questionBodyFetch, "The error reported when fetching a question body shall be a questionBodyFetch error.")
+        XCTAssertNotNil(underlyingError, "The delegate shall be notified of any error when fetching a Question body.")
+    }
 }
 
 enum TestError: Error {
