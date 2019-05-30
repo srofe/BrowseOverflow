@@ -8,10 +8,13 @@
 
 import Foundation
 
-struct Question {
+struct Question : Equatable {
+    var id: Int = -1
     var date: Date = Date()
     var score: Int = 0
     var title: String = ""
+    var body: String? = nil
+    var asker: Person? = nil
     private (set) var answers: [Answer] = []
 
     mutating func add(answer: Answer) {
