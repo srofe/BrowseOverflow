@@ -18,4 +18,12 @@ class PersonBuilderTests: XCTestCase {
         let person = PersonBuilder.personFrom(userDictionary: userDictionary)
         XCTAssertEqual(person.name, "Joe Bloggs", "A PersonBuilder shall decode the name field.")
     }
+
+    func testPersonBuilderFindsAvataUrl() {
+        let userDictionary = [
+            "display_name":"Joe Bloggs",
+            "email_hash":"1234567890"]
+        let person = PersonBuilder.personFrom(userDictionary: userDictionary)
+        XCTAssertEqual(person.avatarUrl, URL(string: "http://www.gravatar.com/avatar/1234567890")!, "A PersonBuilder shall decode the avatar URL field.")
+    }
 }

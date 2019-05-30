@@ -9,9 +9,10 @@
 import Foundation
 
 struct PersonBuilder {
-
     static func personFrom(userDictionary: [String:String]) -> Person {
         let name = userDictionary["display_name"] ?? ""
-        return Person(name: name, avatarUrl: URL(string: "http://")!)
+        let emailHash = userDictionary["email_hash"] ?? ""
+        let urlText = "http://www.gravatar.com/avatar/" + emailHash
+        return Person(name: name, avatarUrl: URL(string: urlText)!)
     }
 }
