@@ -22,6 +22,8 @@
 		F42061382288FA4C00D4072E /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42061372288FA4C00D4072E /* Person.swift */; };
 		F420613A2289402400D4072E /* AnswerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42061392289402400D4072E /* AnswerTests.swift */; };
 		F420613C228940A600D4072E /* Answer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F420613B228940A600D4072E /* Answer.swift */; };
+		F47280AC229FDACF00E70075 /* PersonBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47280AB229FDACF00E70075 /* PersonBuilderTests.swift */; };
+		F47280AE229FDC2500E70075 /* PersonBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47280AD229FDC2500E70075 /* PersonBuilder.swift */; };
 		F902FE47228D143900F59C2D /* QuestionCreationWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F902FE46228D143900F59C2D /* QuestionCreationWorkflowTests.swift */; };
 		F94E749B228D2AED00A36EF7 /* StackOverflowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F94E749A228D2AED00A36EF7 /* StackOverflowManager.swift */; };
 		F97C4672229CC93F001A161A /* QuestionBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F97C4671229CC93F001A161A /* QuestionBuilderTests.swift */; };
@@ -67,6 +69,8 @@
 		F42061372288FA4C00D4072E /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		F42061392289402400D4072E /* AnswerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerTests.swift; sourceTree = "<group>"; };
 		F420613B228940A600D4072E /* Answer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Answer.swift; sourceTree = "<group>"; };
+		F47280AB229FDACF00E70075 /* PersonBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonBuilderTests.swift; sourceTree = "<group>"; };
+		F47280AD229FDC2500E70075 /* PersonBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonBuilder.swift; sourceTree = "<group>"; };
 		F902FE46228D143900F59C2D /* QuestionCreationWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionCreationWorkflowTests.swift; sourceTree = "<group>"; };
 		F94E749A228D2AED00A36EF7 /* StackOverflowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackOverflowManager.swift; sourceTree = "<group>"; };
 		F97C4671229CC93F001A161A /* QuestionBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionBuilderTests.swift; sourceTree = "<group>"; };
@@ -176,6 +180,7 @@
 				F420613B228940A600D4072E /* Answer.swift */,
 				F94E749A228D2AED00A36EF7 /* StackOverflowManager.swift */,
 				F97C4673229CC9E4001A161A /* QuestionBuilder.swift */,
+				F47280AD229FDC2500E70075 /* PersonBuilder.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -189,6 +194,7 @@
 				F42061392289402400D4072E /* AnswerTests.swift */,
 				F902FE46228D143900F59C2D /* QuestionCreationWorkflowTests.swift */,
 				F97C4671229CC93F001A161A /* QuestionBuilderTests.swift */,
+				F47280AB229FDACF00E70075 /* PersonBuilderTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -329,6 +335,7 @@
 				F42061382288FA4C00D4072E /* Person.swift in Sources */,
 				F4206131228548CA00D4072E /* Question.swift in Sources */,
 				F94E749B228D2AED00A36EF7 /* StackOverflowManager.swift in Sources */,
+				F47280AE229FDC2500E70075 /* PersonBuilder.swift in Sources */,
 				F42060FD22840E7500D4072E /* DetailViewController.swift in Sources */,
 				F420613C228940A600D4072E /* Answer.swift in Sources */,
 				F420612D2284123C00D4072E /* Topic.swift in Sources */,
@@ -347,6 +354,7 @@
 				F420612F228545ED00D4072E /* QuestionTests.swift in Sources */,
 				F902FE47228D143900F59C2D /* QuestionCreationWorkflowTests.swift in Sources */,
 				F420613A2289402400D4072E /* AnswerTests.swift in Sources */,
+				F47280AC229FDACF00E70075 /* PersonBuilderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
