@@ -54,7 +54,7 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         question.score = questionDictionary["score"] as? Int ?? 0
         question.title = questionDictionary["title"] as? String ?? ""
         if let ownerDictionary = questionDictionary["owner"] as? Dictionary<String,Any> {
-            question.asker = personFrom(ownerDictionary: ownerDictionary)
+            question.asker = PersonBuilder.personFrom(userDictionary: ownerDictionary)
         }
 
         return question
