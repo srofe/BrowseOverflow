@@ -61,6 +61,20 @@ class QuestionBuilderTests: XCTestCase {
         let questions = try? sut.questions(from: "{ \"questions\": [ { } ] }")
         XCTAssertEqual(questions?.count, 1, "A QuestionBuilder shall accept an empty question.")
     }
+
+    func testNonJsonDataDoesNotCauseABodyToBeAddedToAQuestion() {
+        var question = Question()
+        question.title = "A Test Question"
+        sut.questionBody(for: question, from: "Not JSON")
+        XCTAssertNil(question.body, "A QuestionBuilder shall not provide a body if the JSON is not valid.")
+    }
+
+    func testJsonWhichDoesNotContainABodyDoesNotCayseABodyToBeAdded() {
+        var question = Question()
+        question.title = "A Test Question"
+        sut.questionBody(for: question, from: sutValidJson)
+        XCTAssertNil(question.body, "A QuestionBuilder shall not provide a body if the JSON contains no body.")
+    }
 }
 
 extension QuestionBuilderTests {
