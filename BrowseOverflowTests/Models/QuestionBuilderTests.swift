@@ -16,14 +16,16 @@ class QuestionBuilderTests: XCTestCase {
 
     let sutNotJson = "Not JSON"
     let sutValidJson = "{ \"noquestions\": true }"
-    var sutQuestionJson: String = ""
+    var sutQuestionJson: String!
 
     override func setUp() {
         super.setUp()
         sut = QuestionBuilder()
+        sutQuestionJson = questionJson()
     }
 
     override func tearDown() {
+        sutQuestionJson = nil
         sut = nil
         super.tearDown()
     }
@@ -65,15 +67,22 @@ class QuestionBuilderTests: XCTestCase {
     func testNonJsonDataDoesNotCauseABodyToBeAddedToAQuestion() {
         var question = Question()
         question.title = "A Test Question"
-        sut.questionBody(for: question, from: "Not JSON")
+        sut.questionBody(for: &question, from: "Not JSON")
         XCTAssertNil(question.body, "A QuestionBuilder shall not provide a body if the JSON is not valid.")
     }
 
     func testJsonWhichDoesNotContainABodyDoesNotCayseABodyToBeAdded() {
         var question = Question()
         question.title = "A Test Question"
-        sut.questionBody(for: question, from: sutValidJson)
+        sut.questionBody(for: &question, from: sutValidJson)
         XCTAssertNil(question.body, "A QuestionBuilder shall not provide a body if the JSON contains no body.")
+    }
+
+    func testBodyContainedInJsonIsAddedToBody() {
+        var question = Question()
+        question.title = "A Test Question"
+        sut.questionBody(for: &question, from: sutQuestionJson)
+        XCTAssertEqual(question.body, "<p>I've been trying to use persistent keychain references.</p>", "A QuestionBuilder shall provide a body from a JSON containing a body.")
     }
 }
 

@@ -71,7 +71,7 @@ struct StackOverflowManager {
     }
 
     mutating func received(questionBodyJson: String) {
-        questionBuilder?.questionBody(for: questionNeedingBody!, from: questionBodyJson)
+        questionBuilder?.questionBody(for: &questionNeedingBody!, from: questionBodyJson)
         self.questionNeedingBody = nil
     }
 

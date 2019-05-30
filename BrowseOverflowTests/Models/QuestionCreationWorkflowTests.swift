@@ -184,7 +184,7 @@ class FakeQuestionBuilder : QuestionBuilderProtocol {
         return arrayToReturn
     }
 
-    func questionBody(for question: Question, from json: String) {
+    func questionBody(for question: inout Question, from json: String) {
         self.questionToFill = question
         self.json = json
     }

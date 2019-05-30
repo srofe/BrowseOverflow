@@ -15,7 +15,7 @@ enum QuestionBuilderError : Error {
 
 protocol QuestionBuilderProtocol {
     func questions(from json: String) throws -> [Question]?
-    func questionBody(for question: Question, from json: String)
+    func questionBody(for question: inout Question, from json: String)
 }
 
 struct QuestionBuilder : QuestionBuilderProtocol {
@@ -37,8 +37,13 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         }
     }
 
-    func questionBody(for question: Question, from json: String) {
-        return
+    func questionBody(for question: inout Question, from json: String) {
+        let jsonData = json.data(using: .utf8)
+        guard let queryDictionary = try? JSONSerialization.jsonObject(with: jsonData!) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(queryDictionary) else { return }
+        if let questions = queryDictionary["questions"] as? [Dictionary<String,Any>] {
+            let body = questions.last?["body"] as? String
+            question.body = body
+        }
     }
 
     private func questionFrom(questionDictionary: [String:Any]) -> Question {
