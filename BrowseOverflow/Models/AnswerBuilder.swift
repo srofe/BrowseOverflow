@@ -15,10 +15,11 @@ enum AnswerBuilderError : Error {
 }
 
 struct AnswerBuilder {
-    func addAnswer(to question: Question, containing json: String) throws {
+    func addAnswer(to question: inout Question, containing json: String) throws {
         guard let jsonData = json.data(using: .utf8) else { throw AnswerBuilderError.dataEncoding }
         guard let queryDictionary = try? JSONSerialization.jsonObject(with: jsonData) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(queryDictionary) else { throw AnswerBuilderError.invalidJson }
         if let _ = queryDictionary["items"] {
+            question.add(answer: Answer())
         } else {
             throw AnswerBuilderError.missionData
         }

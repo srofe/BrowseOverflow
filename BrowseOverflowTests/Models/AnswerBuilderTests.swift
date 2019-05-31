@@ -13,24 +13,31 @@ class AnswerBuilderTests: XCTestCase {
 
     func testSendingNonJsonIsAnError() {
         let answerBuilder = AnswerBuilder()
-        let question = Question()
-        XCTAssertThrowsError(try answerBuilder.addAnswer(to: question, containing: "Not JSON"), "An AnswerBuilder shall raise an exception if passed invalid JSON.") { error in
+        var question = Question()
+        XCTAssertThrowsError(try answerBuilder.addAnswer(to: &question, containing: "Not JSON"), "An AnswerBuilder shall raise an exception if passed invalid JSON.") { error in
             XCTAssertEqual(error as? AnswerBuilderError, AnswerBuilderError.invalidJson, "An AnswerBuilder shall set the error type to invalidJson if passed invalid JSON.")
         }
     }
 
     func testSendingValidJsonIsNotAnError() {
         let answerBuilder = AnswerBuilder()
-        let question = Question()
-        XCTAssertNoThrow(try answerBuilder.addAnswer(to: question, containing: answerJson()), "An AnswerBuilder shall not raise an exception if passed valid JSON.")
+        var question = Question()
+        XCTAssertNoThrow(try answerBuilder.addAnswer(to: &question, containing: answerJson()), "An AnswerBuilder shall not raise an exception if passed valid JSON.")
     }
 
     func testSendingValidJsonWithNoAnswersIsAnError() {
         let answerBuilder = AnswerBuilder()
-        let question = Question()
-        XCTAssertThrowsError(try answerBuilder.addAnswer(to: question, containing: "{ \"noanswers\": true }"), "An AnswerBuilder shall raise an exception if passed valid JSON with no Answers.") { error in
+        var question = Question()
+        XCTAssertThrowsError(try answerBuilder.addAnswer(to: &question, containing: "{ \"noanswers\": true }"), "An AnswerBuilder shall raise an exception if passed valid JSON with no Answers.") { error in
             XCTAssertEqual(error as? AnswerBuilderError, AnswerBuilderError.missionData, "An AnswerBuilder shall set the error type to missingData if passed JSON with no Answers.")
         }
+    }
+
+    func testSendingValidAnswerAddsAnAnswer() {
+        let answerBuilder = AnswerBuilder()
+        var question = Question()
+        try? answerBuilder.addAnswer(to: &question, containing: answerJson())
+        XCTAssertEqual(question.answers.count, 1, "An AnsewrBuilder shall add an Answer if the JSON is valid and contains an Answer.")
     }
 }
 
