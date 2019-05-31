@@ -31,6 +31,8 @@ struct AnswerBuilder {
     private func answerFrom(answerDictionary: [String:Any]) -> Answer {
         var answer = Answer()
         answer.text = answerDictionary["body"] as? String ?? ""
+        answer.accepted = answerDictionary["is_accepted"] as? Bool ?? false
+        answer.score = answerDictionary["score"] as? Int ?? 0
         return answer
     }
 }

@@ -60,6 +60,8 @@ class AnswerBuilderTests: XCTestCase {
         try? sut.addAnswer(to: &question, containing: sutAnswerJson)
         let answer = question.answers.first
         XCTAssertEqual(answer?.text, "This is the Answer!", "An AnswerBuilder shall add an Answer with the correct text if the JSON is valid and contains and Answer.")
+        XCTAssertEqual(answer?.accepted, true, "An AnswerBuilder shall add an Answer with the correct accepted flag if the JSON is valid and contains and Answer.")
+        XCTAssertEqual(answer?.score, 1, "An AnswerBuilder shall add an Answer with the correct score if the JSON is valid and contains and Answer.")
     }
 }
 
