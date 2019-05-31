@@ -11,8 +11,7 @@ import Foundation
 struct PersonBuilder {
     static func personFrom(userDictionary: [String:Any]) -> Person {
         let name = userDictionary["display_name"] as? String ?? ""
-        let emailHash = userDictionary["email_hash"] as? String ?? ""
-        let urlText = "http://www.gravatar.com/avatar/" + emailHash
-        return Person(name: name, avatarUrl: URL(string: urlText)!)
+        let profileImage = userDictionary["profile_image"] as? String ?? ""
+        return Person(name: name, avatarUrl: URL(string: profileImage)!)
     }
 }
