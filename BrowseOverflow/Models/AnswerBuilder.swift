@@ -14,6 +14,7 @@ enum AnswerBuilderError : Error {
 
 struct AnswerBuilder {
     func addAnswer(to question: Question, containing json: String) throws {
-        throw AnswerBuilderError.invalidJson
+        guard let jsonData = json.data(using: .utf8) else { throw AnswerBuilderError.invalidJson }
+        guard let queryDictionary = try? JSONSerialization.jsonObject(with: jsonData), JSONSerialization.isValidJSONObject(queryDictionary) else { throw AnswerBuilderError.invalidJson }
     }
 }
