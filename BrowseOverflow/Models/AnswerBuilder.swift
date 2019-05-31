@@ -33,6 +33,9 @@ struct AnswerBuilder {
         answer.text = answerDictionary["body"] as? String ?? ""
         answer.accepted = answerDictionary["is_accepted"] as? Bool ?? false
         answer.score = answerDictionary["score"] as? Int ?? 0
+        if let ownerDictionary = answerDictionary["owner"] as? Dictionary<String,Any> {
+            answer.person = PersonBuilder.personFrom(userDictionary: ownerDictionary)
+        }
         return answer
     }
 }

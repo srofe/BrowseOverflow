@@ -63,6 +63,14 @@ class AnswerBuilderTests: XCTestCase {
         XCTAssertEqual(answer?.accepted, true, "An AnswerBuilder shall add an Answer with the correct accepted flag if the JSON is valid and contains and Answer.")
         XCTAssertEqual(answer?.score, 1, "An AnswerBuilder shall add an Answer with the correct score if the JSON is valid and contains and Answer.")
     }
+
+    func testValidAnswerPersonIsDecoded() {
+        var question = Question()
+        try? sut.addAnswer(to: &question, containing: sutAnswerJson)
+        let answer = question.answers.first
+        let answerer = Person(name: "dmaclach", avatarUrl: URL(string: "https://i.stack.imgur.com/GmE6g.png?s=128&g=1")!)
+        XCTAssertEqual(answer?.person, answerer, "An AnswerBuilder shall add an Answer with the correct person if the JSON is valid and contains and Answer.")
+    }
 }
 
 extension AnswerBuilderTests {

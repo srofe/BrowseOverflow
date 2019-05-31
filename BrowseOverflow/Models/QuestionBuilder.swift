@@ -26,7 +26,7 @@ struct QuestionBuilder : QuestionBuilderProtocol {
         let jsonData = json.data(using: .utf8)
         guard let queryDictionary = try? JSONSerialization.jsonObject(with: jsonData!) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(queryDictionary) else { throw QuestionBuilderError.invalidJson }
 
-        if let questions = queryDictionary["questions"] {
+        if let questions = queryDictionary["items"] {
             for questionDictionary in (questions as? [Dictionary<String,Any>])! {
                 let question = questionFrom(questionDictionary: questionDictionary)
                 questionsToReturn.append(question)
@@ -40,7 +40,7 @@ struct QuestionBuilder : QuestionBuilderProtocol {
     func questionBody(for question: inout Question, from json: String) {
         let jsonData = json.data(using: .utf8)
         guard let queryDictionary = try? JSONSerialization.jsonObject(with: jsonData!) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(queryDictionary) else { return }
-        if let questions = queryDictionary["questions"] as? [Dictionary<String,Any>] {
+        if let questions = queryDictionary["items"] as? [Dictionary<String,Any>] {
             let body = questions.last?["body"] as? String
             question.body = body
         }
