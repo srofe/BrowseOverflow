@@ -24,10 +24,19 @@ class AnswerBuilderTests: XCTestCase {
         let question = Question()
         XCTAssertNoThrow(try answerBuilder.addAnswer(to: question, containing: answerJson()), "An AnswerBuilder shall not raise an exception if passed valid JSON.")
     }
+
+    func testSendingValidJsonWithNoAnswersIsAnError() {
+        let answerBuilder = AnswerBuilder()
+        let question = Question()
+        XCTAssertThrowsError(try answerBuilder.addAnswer(to: question, containing: "{ \"noanswers\": true }"), "An AnswerBuilder shall raise an exception if passed valid JSON with no Answers.") { error in
+            XCTAssertEqual(error as? AnswerBuilderError, AnswerBuilderError.missionData, "An AnswerBuilder shall set the error type to missingData if passed JSON with no Answers.")
+        }
+    }
 }
 
 extension AnswerBuilderTests {
     func answerJson() -> String {
+        // Query URL: https://api.stackexchange.com/2.2/questions/2817980/answers?order=desc&sort=activity&site=stackoverflow
         return
             "{\"items\":[" +
                 "{\"owner\":{" +
