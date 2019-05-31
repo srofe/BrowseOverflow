@@ -159,7 +159,7 @@ class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
     }
 }
 
-class MockStackOverflowCommunicator : StackOverflowCommunicator {
+class MockStackOverflowCommunicator : StackOverflowCommunicatorProtocol {
     var wasAskedToFetchQuestions = false
     var wasAskedToFetchBody = false
     func searchForQuestions(with tag: String) {

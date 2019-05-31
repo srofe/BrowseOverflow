@@ -15,11 +15,6 @@ protocol StackOverflowManagerDelegate {
     func didReceiveQuestions(questions: [Question])
 }
 
-protocol StackOverflowCommunicator {
-    func searchForQuestions(with tag: String)
-    func downloadInformationQuestion(id: Int)
-}
-
 fileprivate let StackOverflowManagerError = "StackOverflowManagerError"
 
 struct StackOverflowError: Error {
@@ -37,11 +32,11 @@ enum StackOverflowErrorCode: Int {
 
 struct StackOverflowManager {
     var delegate: StackOverflowManagerDelegate? = nil
-    var communicator: StackOverflowCommunicator? = nil
+    var communicator: StackOverflowCommunicatorProtocol? = nil
     var questionBuilder: QuestionBuilderProtocol? = nil
     var questionNeedingBody: Question? = nil
 
-    func fetchQuestions(on topic: Topic) {
+    mutating func fetchQuestions(on topic: Topic) {
         communicator?.searchForQuestions(with: topic.tag)
     }
 
