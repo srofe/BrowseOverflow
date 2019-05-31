@@ -54,11 +54,19 @@ class AnswerBuilderTests: XCTestCase {
         try? sut.addAnswer(to: &question, containing: sutAnswerJson)
         XCTAssertEqual(question.answers.count, 1, "An AnsewrBuilder shall add an Answer if the JSON is valid and contains an Answer.")
     }
+
+    func testValidAnswerIsDecoded() {
+        var question = Question()
+        try? sut.addAnswer(to: &question, containing: sutAnswerJson)
+        let answer = question.answers.first
+        XCTAssertEqual(answer?.text, "This is the Answer!", "An AnswerBuilder shall add an Answer with the correct text if the JSON is valid and contains and Answer.")
+    }
 }
 
 extension AnswerBuilderTests {
     func answerJson() -> String {
-        // Query URL: https://api.stackexchange.com/2.2/questions/2817980/answers?order=desc&sort=activity&site=stackoverflow
+        // Query URL: https://api.stackexchange.com/2.2/questions/2817980/answers?order=desc&sort=activity&site=stackoverflow&filter=withBody
+        // Note: Shortened the answer body as the original did not appear to be valid JSON!
         return
             "{\"items\":[" +
                 "{\"owner\":{" +
@@ -75,7 +83,8 @@ extension AnswerBuilderTests {
                 "\"last_activity_date\":1278965736," +
                 "\"creation_date\":1278965736," +
                 "\"answer_id\":3231900," +
-                "\"question_id\":2817980}" +
+                "\"question_id\":2817980," +
+                "\"body\":\"This is the Answer!\"}" +
             "]," +
             "\"has_more\":false," +
             "\"quota_max\":300," +
