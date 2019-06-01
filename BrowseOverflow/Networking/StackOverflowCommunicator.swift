@@ -11,12 +11,15 @@ import Foundation
 class StackOverflowCommunicator {
     private (set) var fetchingUrl: URL? = nil
 
+    private func fetchContentAtUrl(with text: String) {
+        fetchingUrl = URL(string: text)
+    }
+
     func searchForQuestions(with tag: String) {
-        fetchingUrl = URL(string: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(tag)&site=stackoverflow")!
-        return
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(tag)&site=stackoverflow")
     }
 
     func downloadInformationForQuestion(with id: Int) {
-        return
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow")
     }
 }
