@@ -8,20 +8,15 @@
 
 import Foundation
 
-protocol StackOverflowCommunicatorProtocol {
-    mutating func searchForQuestions(with tag: String)
-    func downloadInformationQuestion(id: Int)
-}
-
-struct StackOverflowCommunicator : StackOverflowCommunicatorProtocol {
+class StackOverflowCommunicator {
     private (set) var fetchingUrl: URL? = nil
 
-    mutating func searchForQuestions(with tag: String) {
+    func searchForQuestions(with tag: String) {
         fetchingUrl = URL(string: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(tag)&site=stackoverflow")!
         return
     }
 
-    func downloadInformationQuestion(id: Int) {
+    func downloadInformationForQuestion(with id: Int) {
         return
     }
 }

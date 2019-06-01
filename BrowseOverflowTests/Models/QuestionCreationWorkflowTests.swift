@@ -159,13 +159,13 @@ class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
     }
 }
 
-class MockStackOverflowCommunicator : StackOverflowCommunicatorProtocol {
+class MockStackOverflowCommunicator : StackOverflowCommunicator {
     var wasAskedToFetchQuestions = false
     var wasAskedToFetchBody = false
-    func searchForQuestions(with tag: String) {
+    override func searchForQuestions(with tag: String) {
         wasAskedToFetchQuestions = true
     }
-    func downloadInformationQuestion(id: Int) {
+    override func downloadInformationForQuestion(with id: Int) {
         wasAskedToFetchBody = true
     }
 }

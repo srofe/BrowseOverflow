@@ -32,7 +32,7 @@ enum StackOverflowErrorCode: Int {
 
 struct StackOverflowManager {
     var delegate: StackOverflowManagerDelegate? = nil
-    var communicator: StackOverflowCommunicatorProtocol? = nil
+    var communicator: StackOverflowCommunicator? = nil
     var questionBuilder: QuestionBuilderProtocol? = nil
     var questionNeedingBody: Question? = nil
 
@@ -46,7 +46,7 @@ struct StackOverflowManager {
 
     mutating func fetchBody(for question: Question) {
         questionNeedingBody = question
-        communicator?.downloadInformationQuestion(id: question.id)
+        communicator?.downloadInformationForQuestion(with: question.id)
     }
 
     func fetchingQuestionFailed(with error: Error) {
