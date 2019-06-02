@@ -20,6 +20,6 @@ class StackOverflowCommunicator {
     }
 
     func downloadInformationForQuestion(with id: Int) {
-        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow")
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow&filter=withBody")
     }
 }

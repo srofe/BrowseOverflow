@@ -17,10 +17,10 @@ class StackOverflowCommunicatorTests: XCTestCase {
         XCTAssertEqual(communicator.fetchingUrl?.absoluteString, "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=ios&site=stackoverflow", "A StackOverflowCommunicator shall build a URL for searching by tags.")
     }
 
-    func testDownloadInformationForQuestionCallsQuestionApi() {
+    func testFillingInQuestionBodyCallsQuestionAPI() {
         let communicator = StackOverflowCommunicator()
         let questionId = 12345
         communicator.downloadInformationForQuestion(with: questionId)
-        XCTAssertEqual(communicator.fetchingUrl?.absoluteString, "https://api.stackexchange.com/2.2/questions/12345?order=desc&sort=activity&site=stackoverflow", "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        XCTAssertEqual(communicator.fetchingUrl?.absoluteString, "https://api.stackexchange.com/2.2/questions/12345?order=desc&sort=activity&site=stackoverflow&filter=withBody", "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 }
