@@ -22,4 +22,8 @@ class StackOverflowCommunicator {
     func downloadInformationForQuestion(with id: Int) {
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow&filter=withBody")
     }
+
+    func downloadAnswersToQuestion(with id: Int) {
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)/answers?order=desc&sort=activity&site=stackoverflow")
+    }
 }
