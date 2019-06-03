@@ -53,16 +53,12 @@ class StackOverflowCommunicatorTests: XCTestCase {
 
     func testUsingExpectedHost() {
         sut.searchForQuestions(with: "ios")
-        guard let url = sutMockUrlSession.fetchingUrl else { XCTFail("The URL passed to the session shall be valid."); return }
-        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        XCTAssertEqual(urlComponents?.host, sutHost, "The host name for the URL shall be the stackexchange host.")
+        XCTAssertEqual(sutMockUrlSession.urlComponents?.host, sutHost, "The host name for the URL shall be the stackexchange host.")
     }
 
     func testSearchingForQuestionsOnATopicUsesTheSeachPath() {
         sut.searchForQuestions(with: "ios")
-        guard let url = sutMockUrlSession.fetchingUrl else { XCTFail("The URL passed to the session shall be valid."); return }
-        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        XCTAssertEqual(urlComponents?.path, sutSearchPath, "The path for the question URL shall contain .")
+        XCTAssertEqual(sutMockUrlSession.urlComponents?.path, sutSearchPath, "The path for the question URL shall contain .")
     }
 }
 
@@ -70,6 +66,10 @@ extension StackOverflowCommunicatorTests {
 
     class MockURLSession : SessionProtocol {
         var fetchingUrl: URL?
+        var urlComponents: URLComponents? {
+            guard let url = fetchingUrl else { return nil }
+            return URLComponents(url: url, resolvingAgainstBaseURL: true)
+        }
 
         func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
             self.fetchingUrl = url
