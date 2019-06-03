@@ -15,6 +15,9 @@ class StackOverflowCommunicatorTests: XCTestCase {
     var sut: StackOverflowCommunicator!
 
     // Test URL strings.
+    var sutMockUrlSession: MockURLSession!
+    let sutHost = "api.stackexchange.com"
+    let sutSearchPath = "/2.2/search"
     let questionId = 12345
     let searchUrl = "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=ios&site=stackoverflow"
     let questionUrl = "https://api.stackexchange.com/2.2/questions/12345?order=desc&sort=activity&site=stackoverflow&filter=withBody"
@@ -23,9 +26,12 @@ class StackOverflowCommunicatorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         sut = StackOverflowCommunicator()
+        sutMockUrlSession = MockURLSession()
+        sut.session = sutMockUrlSession
     }
 
     override func tearDown() {
+        sutMockUrlSession = nil
         sut = nil
         super.tearDown()
     }
@@ -46,12 +52,17 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testUsingExpectedHost() {
-        let mockUrlSession = MockURLSession()
-        sut.session = mockUrlSession
         sut.searchForQuestions(with: "ios")
-        guard let url = mockUrlSession.fetchingUrl else { XCTFail("The URL passed to the session shall be valid."); return }
+        guard let url = sutMockUrlSession.fetchingUrl else { XCTFail("The URL passed to the session shall be valid."); return }
         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        XCTAssertEqual(urlComponents?.host, "api.stackexchange.com", "The host name for the URL shall be the stackexchange host.")
+        XCTAssertEqual(urlComponents?.host, sutHost, "The host name for the URL shall be the stackexchange host.")
+    }
+
+    func testSearchingForQuestionsOnATopicUsesTheSeachPath() {
+        sut.searchForQuestions(with: "ios")
+        guard let url = sutMockUrlSession.fetchingUrl else { XCTFail("The URL passed to the session shall be valid."); return }
+        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        XCTAssertEqual(urlComponents?.path, sutSearchPath, "The path for the question URL shall contain .")
     }
 }
 
