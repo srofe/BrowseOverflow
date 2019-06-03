@@ -44,4 +44,26 @@ class StackOverflowCommunicatorTests: XCTestCase {
         sut.downloadAnswersToQuestion(with: questionId)
         XCTAssertEqual(sut.fetchingUrl?.absoluteString, answersUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
+
+    func testUsingExpectedHost() {
+        let mockUrlSession = MockURLSession()
+        sut.session = mockUrlSession
+        sut.searchForQuestions(with: "ios")
+        guard let url = mockUrlSession.fetchingUrl else { XCTFail("The URL passed to the session shall be valid."); return }
+        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        XCTAssertEqual(urlComponents?.host, "api.stackexchange.com", "The host name for the URL shall be the stackexchange host.")
+    }
+}
+
+extension StackOverflowCommunicatorTests {
+
+    class MockURLSession : SessionProtocol {
+        var fetchingUrl: URL?
+
+        func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
+            self.fetchingUrl = url
+
+            return URLSession.shared.dataTask(with: url)
+        }
+    }
 }
