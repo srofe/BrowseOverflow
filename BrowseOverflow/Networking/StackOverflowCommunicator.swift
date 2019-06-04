@@ -23,7 +23,8 @@ class StackOverflowCommunicator {
     }
 
     func searchForQuestions(with tag: String) {
-        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(tag)&site=stackoverflow")
+        guard let encodedTag = tag.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { fatalError() }
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(encodedTag)&site=stackoverflow")
     }
 
     func downloadInformationForQuestion(with id: Int) {

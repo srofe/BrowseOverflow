@@ -21,6 +21,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     let sutQueryTag = "ios"
     let questionId = 12345
     let searchUrl = "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=ios&site=stackoverflow"
+    let searchUrlWithSpace = "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=unit%20testing&site=stackoverflow"
     let questionUrl = "https://api.stackexchange.com/2.2/questions/12345?order=desc&sort=activity&site=stackoverflow&filter=withBody"
     let answersUrl = "https://api.stackexchange.com/2.2/questions/12345/answers?order=desc&sort=activity&site=stackoverflow"
 
@@ -40,6 +41,11 @@ class StackOverflowCommunicatorTests: XCTestCase {
     func testSearchingForQuestionsOnTopicCallsTopicApi() {
         sut.searchForQuestions(with: sutQueryTag)
         XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, searchUrl, "A StackOverflowCommunicator shall build a URL for searching by tags.")
+    }
+
+    func testSearchingForQuestionOnTopicWithSpacesIsValid() {
+        sut.searchForQuestions(with: "unit testing")
+        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, searchUrlWithSpace, "A StackOverflowCommunicator shall allow for search terms with spaces.")
     }
 
     func testFillingInQuestionBodyCallsQuestionAPI() {
