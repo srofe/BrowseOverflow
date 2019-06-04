@@ -14,16 +14,14 @@ class StackOverflowCommunicatorTests: XCTestCase {
     // The System Under Test - a StackOverflowCommunicator
     var sut: StackOverflowCommunicator!
 
-    // Test URL strings.
+    // Test constants.
     var sutMockUrlSession: MockURLSession!
     let sutHost = "api.stackexchange.com"
     let sutSearchPath = "/2.2/search"
+    let sutQuestionPath = "/2.2/questions/12345"
+    let sutAnswerPath = "/2.2/questions/12345/answers"
     let sutQueryTag = "ios"
-    let questionId = 12345
-    let searchUrl = "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=ios&site=stackoverflow"
-    let searchUrlWithSpace = "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=unit%20testing&site=stackoverflow"
-    let questionUrl = "https://api.stackexchange.com/2.2/questions/12345?order=desc&sort=activity&site=stackoverflow&filter=withBody"
-    let answersUrl = "https://api.stackexchange.com/2.2/questions/12345/answers?order=desc&sort=activity&site=stackoverflow"
+    let sutQuestionId = 12345
 
     override func setUp() {
         super.setUp()
@@ -40,22 +38,26 @@ class StackOverflowCommunicatorTests: XCTestCase {
 
     func testSearchingForQuestionsOnTopicCallsTopicApi() {
         sut.searchForQuestions(with: sutQueryTag)
-        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, searchUrl, "A StackOverflowCommunicator shall build a URL for searching by tags.")
+        let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","tagged":"ios","site":"stackoverflow"])
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for searching tags.")
     }
 
     func testSearchingForQuestionOnTopicWithSpacesIsValid() {
         sut.searchForQuestions(with: "unit testing")
-        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, searchUrlWithSpace, "A StackOverflowCommunicator shall allow for search terms with spaces.")
+        let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","site":"stackoverflow", "tagged":"unit testing"])
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall allow for search terms with spaces.")
     }
 
     func testFillingInQuestionBodyCallsQuestionAPI() {
-        sut.downloadInformationForQuestion(with: questionId)
-        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, questionUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        sut.downloadInformationForQuestion(with: sutQuestionId)
+        let urlElements = (sutHost, sutQuestionPath, ["order":"desc","sort":"activity","site":"stackoverflow", "filter":"withBody"])
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
     func testTestAnswersToQuestionCallsQuestionApi() {
-        sut.downloadAnswersToQuestion(with: questionId)
-        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, answersUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        sut.downloadAnswersToQuestion(with: sutQuestionId)
+        let urlElements = (sutHost, sutAnswerPath, ["order":"desc","sort":"activity","site":"stackoverflow"])
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
 }
@@ -73,6 +75,40 @@ extension StackOverflowCommunicatorTests {
             self.fetchingUrl = url
 
             return URLSession.shared.dataTask(with: url)
+        }
+    }
+}
+
+extension XCTest {
+    typealias URLItems = (host: String, path: String, items: [String:String])
+
+    func AssertEquivalent(url: URL, urlElements: URLItems, _ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) {
+        guard let urlPathComponents = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            XCTFail("URL \"\(url.absoluteString)\" is not valid - \(message()).", file: file, line: line)
+            return
+        }
+        guard urlPathComponents.host == urlElements.host else {
+            XCTFail("URL host component \"\(urlPathComponents.host!)\" does not equal \"\(urlElements.host)\" - \(message()).", file: file, line: line)
+            return
+        }
+        guard urlPathComponents.path == urlElements.path else {
+            XCTFail("URL path component \"\(urlPathComponents.path)\" does not equal \"\(urlElements.path)\" - \(message()).", file: file, line: line)
+            return
+        }
+        guard let queryItems = urlPathComponents.queryItems else {
+            XCTFail("URL query parameters missing - \(message()).", file: file, line: line)
+            return
+        }
+        guard queryItems.count == urlElements.items.count else {
+            XCTFail("URL query item count \"\(queryItems.count)\" does not equal \"\(urlElements.items.count)\" - \(message()).", file: file, line: line)
+            return
+        }
+        for item in urlElements.items {
+            let queryItem = URLQueryItem(name: item.key, value: item.value)
+            guard (urlPathComponents.queryItems?.contains(queryItem))! else {
+                XCTFail("URL query does not contain parameters with name \"\(item.key)\" and/or value \"\(item.value)\".", file: file, line: line)
+                return
+            }
         }
     }
 }
