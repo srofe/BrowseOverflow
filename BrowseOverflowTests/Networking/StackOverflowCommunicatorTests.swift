@@ -37,35 +37,21 @@ class StackOverflowCommunicatorTests: XCTestCase {
         super.tearDown()
     }
 
+    func testSearchingForQuestionsOnTopicCallsTopicApi() {
+        sut.searchForQuestions(with: sutQueryTag)
+        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, searchUrl, "A StackOverflowCommunicator shall build a URL for searching by tags.")
+    }
+
     func testFillingInQuestionBodyCallsQuestionAPI() {
         sut.downloadInformationForQuestion(with: questionId)
-        XCTAssertEqual(sut.fetchingUrl?.absoluteString, questionUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, questionUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
     func testTestAnswersToQuestionCallsQuestionApi() {
         sut.downloadAnswersToQuestion(with: questionId)
-        XCTAssertEqual(sut.fetchingUrl?.absoluteString, answersUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        XCTAssertEqual(sutMockUrlSession.fetchingUrl?.absoluteString, answersUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
-    func testSearchingForQuestionsOnATopicUsesExpectedHost() {
-        sut.searchForQuestions(with: sutQueryTag)
-        XCTAssertEqual(sutMockUrlSession.urlComponents?.host, sutHost, "The host name for the URL shall be the stackexchange host.")
-    }
-
-    func testSearchingForQuestionsOnATopicUsesTheSeachPath() {
-        sut.searchForQuestions(with: sutQueryTag)
-        XCTAssertEqual(sutMockUrlSession.urlComponents?.path, sutSearchPath, "The path for the question URL shall contain the path \"\(sutSearchPath)\".")
-    }
-
-    func testSearchingForQuestionsOnATopicUsesExpectedQueryItems() {
-        sut.searchForQuestions(with: sutQueryTag)
-        XCTAssertEqual(sutMockUrlSession.urlComponents?.queryItems?.count, 5, "The URL shall have the correct number of query items.")
-        sutMockUrlSession.verifyQueryItemContains(name: "pagesize", value: "20")
-        sutMockUrlSession.verifyQueryItemContains(name: "order", value: "desc")
-        sutMockUrlSession.verifyQueryItemContains(name: "sort", value: "activity")
-        sutMockUrlSession.verifyQueryItemContains(name: "tagged", value: sutQueryTag)
-        sutMockUrlSession.verifyQueryItemContains(name: "site", value: "stackoverflow")
-    }
 }
 
 extension StackOverflowCommunicatorTests {
@@ -81,15 +67,6 @@ extension StackOverflowCommunicatorTests {
             self.fetchingUrl = url
 
             return URLSession.shared.dataTask(with: url)
-        }
-
-        func verifyQueryItemContains(name: String, value: String, file: StaticString = #file, line: UInt = #line) {
-            let queryItem = URLQueryItem(name: name, value: value)
-            guard let queryItems = urlComponents?.queryItems else {
-                XCTFail("The URL contains no query items: \"\( fetchingUrl?.absoluteString ?? "")\".", file: file, line: line)
-                return
-            }
-            XCTAssertTrue(queryItems.contains(queryItem), "URL query does not contain parameter with name \"\(name)\" and/or value \"\(value)\".", file: file, line: line)
         }
     }
 }
