@@ -37,11 +37,6 @@ class StackOverflowCommunicatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSearchingForQuestionsOnTopicCallsTopicApi() {
-        sut.searchForQuestions(with: sutQueryTag)
-        XCTAssertEqual(sut.fetchingUrl?.absoluteString, searchUrl, "A StackOverflowCommunicator shall build a URL for searching by tags.")
-    }
-
     func testFillingInQuestionBodyCallsQuestionAPI() {
         sut.downloadInformationForQuestion(with: questionId)
         XCTAssertEqual(sut.fetchingUrl?.absoluteString, questionUrl, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
