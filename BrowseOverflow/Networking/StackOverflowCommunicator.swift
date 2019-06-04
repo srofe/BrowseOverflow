@@ -16,12 +16,10 @@ extension URLSession : SessionProtocol {}
 
 class StackOverflowCommunicator {
     lazy var session: SessionProtocol = URLSession.shared
-    private (set) var fetchingUrl: URL? = nil
 
     private func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
         _ =  session.dataTask(with: url) { (data, response, error) in }
-        fetchingUrl = url
     }
 
     func searchForQuestions(with tag: String) {
