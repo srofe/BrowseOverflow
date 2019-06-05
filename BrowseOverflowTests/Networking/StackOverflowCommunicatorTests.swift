@@ -26,7 +26,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         sut = StackOverflowCommunicator()
-        sutMockUrlSession = MockURLSession()
+        sutMockUrlSession = MockURLSession(data: nil, urlResponse: nil, error: nil)
         sut.session = sutMockUrlSession
     }
 
@@ -65,16 +65,42 @@ class StackOverflowCommunicatorTests: XCTestCase {
 extension StackOverflowCommunicatorTests {
 
     class MockURLSession : SessionProtocol {
+        private let dataTask: MockTask
         var fetchingUrl: URL?
         var urlComponents: URLComponents? {
             guard let url = fetchingUrl else { return nil }
             return URLComponents(url: url, resolvingAgainstBaseURL: true)
         }
 
+        init(data: Data?, urlResponse: URLResponse?, error: Error?) {
+            dataTask = MockTask(data: data, urlResponse: urlResponse, error: error)
+        }
+
         func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
             self.fetchingUrl = url
+            self.dataTask.completionHandler = completionHandler
 
-            return URLSession.shared.dataTask(with: url)
+            return dataTask
+        }
+    }
+
+    class MockTask : URLSessionDataTask {
+        typealias CompletionHandler = (Data?, URLResponse?, Error?) -> Void
+        private let data: Data?
+        private let urlResponse: URLResponse?
+        private let responseError: Error?
+        var completionHandler: CompletionHandler?
+
+        init(data: Data?, urlResponse: URLResponse?, error: Error?) {
+            self.data = data
+            self.urlResponse = urlResponse
+            self.responseError = error
+        }
+
+        override func resume() {
+            DispatchQueue.main.async {
+                self.completionHandler?(self.data, self.urlResponse, self.error)
+            }
         }
     }
 }
