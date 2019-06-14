@@ -9,17 +9,21 @@
 import Foundation
 
 protocol SessionProtocol {
-    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+    func dataTask(with url: URL) -> URLSessionDataTask
 }
 
 extension URLSession : SessionProtocol {}
 
-class StackOverflowCommunicator {
-    lazy var session: SessionProtocol = URLSession.shared
+class StackOverflowCommunicator: NSObject {
+    lazy var session: SessionProtocol = {
+        let configuration = URLSessionConfiguration.default
+        configuration.waitsForConnectivity = true
+        return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+    }()
 
     private func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
-        _ =  session.dataTask(with: url) { (data, response, error) in }
+        _ =  session.dataTask(with: url)
     }
 
     func searchForQuestions(with tag: String) {
@@ -34,4 +38,7 @@ class StackOverflowCommunicator {
     func downloadAnswersToQuestion(with id: Int) {
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)/answers?order=desc&sort=activity&site=stackoverflow")
     }
+}
+
+extension StackOverflowCommunicator: URLSessionDataDelegate {
 }
