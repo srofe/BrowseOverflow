@@ -20,11 +20,15 @@ class StackOverflowCommunicator: NSObject {
         configuration.waitsForConnectivity = true
         return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }()
+    var dataTask: URLSessionDataTask?
 
     private func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
-        let dataTask =  session.dataTask(with: url)
-        dataTask.resume()
+        if dataTask != nil {
+            dataTask?.cancel()
+        }
+        dataTask =  session.dataTask(with: url)
+        dataTask?.resume()
     }
 
     func searchForQuestions(with tag: String) {

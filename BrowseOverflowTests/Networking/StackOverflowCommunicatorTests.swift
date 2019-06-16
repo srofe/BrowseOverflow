@@ -65,6 +65,12 @@ class StackOverflowCommunicatorTests: XCTestCase {
         XCTAssertTrue(sutMockUrlSession.dataTask!.resumeCalled, "A StackOverflowCommunicator shall call the data task resume method")
     }
 
+    func testMakingSecondRequestCancelsFirstRequest() {
+        sut.searchForQuestions(with: sutQueryTag)
+        let firstDataTask = sutMockUrlSession.dataTask
+        sut.downloadInformationForQuestion(with: sutQuestionId)
+        XCTAssertTrue(firstDataTask!.cancelCalled, "A StackOverflowCommunicator shall cancel a request if a second request is made.")
+    }
 }
 
 extension StackOverflowCommunicatorTests {
@@ -86,9 +92,14 @@ extension StackOverflowCommunicatorTests {
 
     class MockDataTask: URLSessionDataTask {
         var resumeCalled = false
+        var cancelCalled = false
 
         override func resume() {
             resumeCalled = true
+        }
+
+        override func cancel() {
+            cancelCalled = true
         }
     }
 }
