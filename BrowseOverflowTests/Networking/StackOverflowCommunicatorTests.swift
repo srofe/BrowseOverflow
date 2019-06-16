@@ -39,25 +39,25 @@ class StackOverflowCommunicatorTests: XCTestCase {
     func testSearchingForQuestionsOnTopicCallsTopicApi() {
         sut.searchForQuestions(with: sutQueryTag)
         let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","tagged":"ios","site":"stackoverflow"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for searching tags.")
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for searching tags.")
     }
 
     func testSearchingForQuestionOnTopicWithSpacesIsValid() {
         sut.searchForQuestions(with: "unit testing")
         let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","site":"stackoverflow", "tagged":"unit testing"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall allow for search terms with spaces.")
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall allow for search terms with spaces.")
     }
 
     func testFillingInQuestionBodyCallsQuestionAPI() {
         sut.downloadInformationForQuestion(with: sutQuestionId)
         let urlElements = (sutHost, sutQuestionPath, ["order":"desc","sort":"activity","site":"stackoverflow", "filter":"withBody"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
     func testTestAnswersToQuestionCallsQuestionApi() {
         sut.downloadAnswersToQuestion(with: sutQuestionId)
         let urlElements = (sutHost, sutAnswerPath, ["order":"desc","sort":"activity","site":"stackoverflow"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
 }
@@ -65,14 +65,14 @@ class StackOverflowCommunicatorTests: XCTestCase {
 extension StackOverflowCommunicatorTests {
 
     class MockURLSession : SessionProtocol {
-        var fetchingUrl: URL?
+        var fetchingUrl: [URL] = []
         var urlComponents: URLComponents? {
-            guard let url = fetchingUrl else { return nil }
+            guard let url = fetchingUrl.first else { return nil }
             return URLComponents(url: url, resolvingAgainstBaseURL: true)
         }
 
         func dataTask(with url: URL) -> URLSessionDataTask {
-            self.fetchingUrl = url
+            self.fetchingUrl.append(url)
             return URLSessionDataTask()
         }
     }
