@@ -23,7 +23,8 @@ class StackOverflowCommunicator: NSObject {
 
     private func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
-        _ =  session.dataTask(with: url)
+        let dataTask =  session.dataTask(with: url)
+        dataTask.resume()
     }
 
     func searchForQuestions(with tag: String) {

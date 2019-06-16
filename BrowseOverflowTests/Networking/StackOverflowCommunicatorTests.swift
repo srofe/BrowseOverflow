@@ -60,11 +60,17 @@ class StackOverflowCommunicatorTests: XCTestCase {
         AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
+    func testSearchingForQuestionsCallsDataTaskResume() {
+        sut.searchForQuestions(with: sutQueryTag)
+        XCTAssertTrue(sutMockUrlSession.dataTask!.resumeCalled, "A StackOverflowCommunicator shall call the data task resume method")
+    }
+
 }
 
 extension StackOverflowCommunicatorTests {
 
     class MockURLSession : SessionProtocol {
+        var dataTask: MockDataTask?
         var fetchingUrl: [URL] = []
         var urlComponents: URLComponents? {
             guard let url = fetchingUrl.first else { return nil }
@@ -73,7 +79,16 @@ extension StackOverflowCommunicatorTests {
 
         func dataTask(with url: URL) -> URLSessionDataTask {
             self.fetchingUrl.append(url)
-            return URLSessionDataTask()
+            dataTask = MockDataTask()
+            return dataTask!
+        }
+    }
+
+    class MockDataTask: URLSessionDataTask {
+        var resumeCalled = false
+
+        override func resume() {
+            resumeCalled = true
         }
     }
 }
