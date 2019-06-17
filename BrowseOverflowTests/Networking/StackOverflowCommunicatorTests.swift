@@ -71,6 +71,16 @@ class StackOverflowCommunicatorTests: XCTestCase {
         sut.downloadInformationForQuestion(with: sutQuestionId)
         XCTAssertTrue(firstDataTask!.cancelCalled, "A StackOverflowCommunicator shall cancel a request if a second request is made.")
     }
+
+    func testCompletingTaskCancelsTask() {
+        let configuration = URLSessionConfiguration.default
+        let session = URLSession(configuration: configuration, delegate: sut, delegateQueue: nil)
+        sut.session = session
+        let dataTask = MockDataTask()
+        sut.dataTask = dataTask
+        sut.urlSession(session, task: dataTask, didCompleteWithError: nil)
+        XCTAssertTrue(dataTask.cancelCalled, "A StackOverflowCommunicator shall cancel a request when it is completed.")
+    }
 }
 
 extension StackOverflowCommunicatorTests {

@@ -46,4 +46,8 @@ class StackOverflowCommunicator: NSObject {
 }
 
 extension StackOverflowCommunicator: URLSessionDataDelegate {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        task.cancel()
+        return
+    }
 }
