@@ -25,7 +25,7 @@ class StackOverflowCommunicator: NSObject {
     private func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
         if dataTask != nil {
-            dataTask?.cancel()
+            cancelDataTask()
         }
         dataTask =  session.dataTask(with: url)
         dataTask?.resume()
@@ -43,12 +43,16 @@ class StackOverflowCommunicator: NSObject {
     func downloadAnswersToQuestion(with id: Int) {
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)/answers?order=desc&sort=activity&site=stackoverflow")
     }
+
+    private func cancelDataTask() {
+        dataTask?.cancel()
+        dataTask = nil
+    }
 }
 
 extension StackOverflowCommunicator: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        dataTask?.cancel()
-        dataTask = nil
+        cancelDataTask()
         return
     }
 }
