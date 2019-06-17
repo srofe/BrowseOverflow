@@ -81,6 +81,15 @@ class StackOverflowCommunicatorTests: XCTestCase {
         sut.urlSession(session, task: dataTask, didCompleteWithError: nil)
         XCTAssertTrue(dataTask.cancelCalled, "A StackOverflowCommunicator shall cancel a request when it is completed.")
     }
+
+    func testDataTaskIsSetToNilWhenSessionCompleted() {
+        let configuration = URLSessionConfiguration.default
+        let session = URLSession(configuration: configuration, delegate: sut, delegateQueue: nil)
+        sut.session = session
+        sut.dataTask = MockDataTask()
+        sut.urlSession(session, task: sut.dataTask!, didCompleteWithError: nil)
+        XCTAssertNil(sut.dataTask, "A StackOverflowCommunicator shall set the data task to nil when it is completed.")
+    }
 }
 
 extension StackOverflowCommunicatorTests {
