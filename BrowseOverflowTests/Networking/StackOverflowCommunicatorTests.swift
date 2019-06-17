@@ -15,6 +15,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     var sut: StackOverflowCommunicator!
 
     // Test constants.
+    var sutDelegateUrlSession: URLSession!
     var sutMockUrlSession: MockURLSession!
     let sutHost = "api.stackexchange.com"
     let sutSearchPath = "/2.2/search"
@@ -26,46 +27,54 @@ class StackOverflowCommunicatorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         sut = StackOverflowCommunicator()
+        let configuration = URLSessionConfiguration.default
+        sutDelegateUrlSession = URLSession(configuration: configuration, delegate: sut, delegateQueue: nil)
         sutMockUrlSession = MockURLSession()
-        sut.session = sutMockUrlSession
     }
 
     override func tearDown() {
         sutMockUrlSession = nil
+        sutDelegateUrlSession = nil
         sut = nil
         super.tearDown()
     }
 
     func testSearchingForQuestionsOnTopicCallsTopicApi() {
+        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: sutQueryTag)
         let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","tagged":"ios","site":"stackoverflow"])
         AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for searching tags.")
     }
 
     func testSearchingForQuestionOnTopicWithSpacesIsValid() {
+        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: "unit testing")
         let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","site":"stackoverflow", "tagged":"unit testing"])
         AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall allow for search terms with spaces.")
     }
 
     func testFillingInQuestionBodyCallsQuestionAPI() {
+        sut.session = sutMockUrlSession
         sut.downloadInformationForQuestion(with: sutQuestionId)
         let urlElements = (sutHost, sutQuestionPath, ["order":"desc","sort":"activity","site":"stackoverflow", "filter":"withBody"])
         AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
     func testTestAnswersToQuestionCallsQuestionApi() {
+        sut.session = sutMockUrlSession
         sut.downloadAnswersToQuestion(with: sutQuestionId)
         let urlElements = (sutHost, sutAnswerPath, ["order":"desc","sort":"activity","site":"stackoverflow"])
         AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
     func testSearchingForQuestionsCallsDataTaskResume() {
+        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: sutQueryTag)
         XCTAssertTrue(sutMockUrlSession.dataTask!.resumeCalled, "A StackOverflowCommunicator shall call the data task resume method")
     }
 
     func testMakingSecondRequestCancelsFirstRequest() {
+        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: sutQueryTag)
         let firstDataTask = sutMockUrlSession.dataTask
         sut.downloadInformationForQuestion(with: sutQuestionId)
@@ -73,21 +82,17 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testCompletingTaskCancelsTask() {
-        let configuration = URLSessionConfiguration.default
-        let session = URLSession(configuration: configuration, delegate: sut, delegateQueue: nil)
-        sut.session = session
+        sut.session = sutDelegateUrlSession
         let dataTask = MockDataTask()
         sut.dataTask = dataTask
-        sut.urlSession(session, task: dataTask, didCompleteWithError: nil)
+        sut.urlSession(sutDelegateUrlSession, task: dataTask, didCompleteWithError: nil)
         XCTAssertTrue(dataTask.cancelCalled, "A StackOverflowCommunicator shall cancel a request when it is completed.")
     }
 
     func testDataTaskIsSetToNilWhenSessionCompleted() {
-        let configuration = URLSessionConfiguration.default
-        let session = URLSession(configuration: configuration, delegate: sut, delegateQueue: nil)
-        sut.session = session
+        sut.session = sutDelegateUrlSession
         sut.dataTask = MockDataTask()
-        sut.urlSession(session, task: sut.dataTask!, didCompleteWithError: nil)
+        sut.urlSession(sutDelegateUrlSession, task: sut.dataTask!, didCompleteWithError: nil)
         XCTAssertNil(sut.dataTask, "A StackOverflowCommunicator shall set the data task to nil when it is completed.")
     }
 }
