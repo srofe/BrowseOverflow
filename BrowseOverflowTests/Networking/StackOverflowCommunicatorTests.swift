@@ -107,16 +107,3 @@ class StackOverflowCommunicatorTests: XCTestCase {
         XCTAssertEqual(manager?.topicFailureErrorCode, 404)
     }
 }
-
-extension StackOverflowCommunicatorTests {
-
-    class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorDelegate {
-        var topicFailureErrorCode = 0
-
-        override func searchingForQuestionsFailed(with error: Error) {
-            if let error = error as? StackOverflowCommunicatorError {
-                topicFailureErrorCode = error.errorCode
-            }
-        }
-    }
-}
