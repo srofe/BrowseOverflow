@@ -96,14 +96,26 @@ class StackOverflowCommunicatorTests: XCTestCase {
         XCTAssertNil(sut.dataTask, "A StackOverflowCommunicator shall set the data task to nil when it is completed.")
     }
 
-    func testReceiving404ResponseToQuestionBodyRequestPassesErrorToDelegate() {
-        sut.session = sutDelegateUrlSession
-        sut.delegate = MockStackOverflowManager()
+    func testReceiving404ResponseToTopicSearchPassesErrorToDelegate() {
+        let communicator = IntrospectionStackOverflowCommunicator()
+        communicator.session = sutDelegateUrlSession
+        communicator.delegate = MockStackOverflowManager()
+        communicator.searchForQuestions(with: sutQueryTag)
+        let manager = communicator.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+    }
+}
+
+class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
+
+    func fetchContentAtUrl(with text: String) {
         let dataTask = MockDataTask()
         dataTask.statusCode = 404
-        sut.dataTask = dataTask
-        sut.urlSession(sutDelegateUrlSession, task: sut.dataTask!, didCompleteWithError: nil)
-        let manager = sut.delegate as? MockStackOverflowManager
-        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+        self.urlSession(self.session as! URLSession, task: dataTask, didCompleteWithError: nil)
+    }
+
+    override func searchForQuestions(with tag: String) {
+        guard let encodedTag = tag.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { fatalError() }
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(encodedTag)&site=stackoverflow")
     }
 }
