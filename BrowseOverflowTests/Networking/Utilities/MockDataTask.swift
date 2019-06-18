@@ -10,8 +10,16 @@ import Foundation
 @testable import BrowseOverflow
 
 class MockDataTask: URLSessionDataTask {
+
+    override var response: URLResponse? {
+        get {
+            let url = URL(string: "http://example.com")
+            return HTTPURLResponse(url: url!, statusCode: self.statusCode, httpVersion: nil, headerFields: nil)
+        }
+    }
     var resumeCalled = false
     var cancelCalled = false
+    var statusCode = 200
     
     override func resume() {
         resumeCalled = true

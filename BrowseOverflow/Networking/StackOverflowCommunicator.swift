@@ -14,6 +14,18 @@ protocol SessionProtocol {
 
 extension URLSession : SessionProtocol {}
 
+protocol StackOverflowCommunicatorDelegate {
+    func searchingForQuestionsFailed(with error: Error)
+}
+
+struct StackOverflowCommunicatorError: Error {
+    enum Kind {
+        case statusError
+    }
+    let errorCode: Int
+    let kind: Kind
+}
+
 class StackOverflowCommunicator: NSObject {
     lazy var session: SessionProtocol = {
         let configuration = URLSessionConfiguration.default
@@ -21,6 +33,7 @@ class StackOverflowCommunicator: NSObject {
         return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
     }()
     var dataTask: URLSessionDataTask?
+    var delegate: StackOverflowCommunicatorDelegate?
 
     private func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
@@ -51,7 +64,14 @@ class StackOverflowCommunicator: NSObject {
 }
 
 extension StackOverflowCommunicator: URLSessionDataDelegate {
+
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let response = task.response as? HTTPURLResponse {
+            if response.statusCode == 404 {
+                let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
+                delegate?.searchingForQuestionsFailed(with: error)
+            }
+        }
         cancelDataTask()
         return
     }

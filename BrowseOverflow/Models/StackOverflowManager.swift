@@ -30,13 +30,13 @@ enum StackOverflowErrorCode: Int {
     case QuestionSearchCode
 }
 
-struct StackOverflowManager {
+class StackOverflowManager {
     var delegate: StackOverflowManagerDelegate? = nil
     var communicator: StackOverflowCommunicator? = nil
     var questionBuilder: QuestionBuilderProtocol? = nil
     var questionNeedingBody: Question? = nil
 
-    mutating func fetchQuestions(on topic: Topic) {
+    func fetchQuestions(on topic: Topic) {
         communicator?.searchForQuestions(with: topic.tag)
     }
 
@@ -44,7 +44,7 @@ struct StackOverflowManager {
         tellDelegateAboutError(kind: .questionSearch, underlyingError: error)
     }
 
-    mutating func fetchBody(for question: Question) {
+    func fetchBody(for question: Question) {
         questionNeedingBody = question
         communicator?.downloadInformationForQuestion(with: question.id)
     }
@@ -65,7 +65,7 @@ struct StackOverflowManager {
         }
     }
 
-    mutating func received(questionBodyJson: String) {
+    func received(questionBodyJson: String) {
         questionBuilder?.questionBody(for: &questionNeedingBody!, from: questionBodyJson)
         self.questionNeedingBody = nil
     }

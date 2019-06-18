@@ -95,4 +95,28 @@ class StackOverflowCommunicatorTests: XCTestCase {
         sut.urlSession(sutDelegateUrlSession, task: sut.dataTask!, didCompleteWithError: nil)
         XCTAssertNil(sut.dataTask, "A StackOverflowCommunicator shall set the data task to nil when it is completed.")
     }
+
+    func testReceiving404ResponseToQuestionBodyRequestPassesErrorToDelegate() {
+        sut.session = sutDelegateUrlSession
+        sut.delegate = MockStackOverflowManager()
+        let dataTask = MockDataTask()
+        dataTask.statusCode = 404
+        sut.dataTask = dataTask
+        sut.urlSession(sutDelegateUrlSession, task: sut.dataTask!, didCompleteWithError: nil)
+        let manager = sut.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+    }
+}
+
+extension StackOverflowCommunicatorTests {
+
+    class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorDelegate {
+        var topicFailureErrorCode = 0
+
+        override func searchingForQuestionsFailed(with error: Error) {
+            if let error = error as? StackOverflowCommunicatorError {
+                topicFailureErrorCode = error.errorCode
+            }
+        }
+    }
 }
