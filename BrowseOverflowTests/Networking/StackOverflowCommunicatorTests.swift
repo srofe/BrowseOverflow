@@ -104,11 +104,20 @@ class StackOverflowCommunicatorTests: XCTestCase {
         let manager = communicator.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.topicFailureErrorCode, 404)
     }
+
+    func testReceiving404ResponseToQuestionBodyRequestPassesErrorToDelegate() {
+        let communicator = IntrospectionStackOverflowCommunicator()
+        communicator.session = sutDelegateUrlSession
+        communicator.delegate = MockStackOverflowManager()
+        communicator.downloadInformationForQuestion(with: sutQuestionId)
+        let manager = communicator.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+    }
 }
 
 class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
 
-    func fetchContentAtUrl(with text: String) {
+    private func fetchContentAtUrl(with text: String) {
         let dataTask = MockDataTask()
         dataTask.statusCode = 404
         self.urlSession(self.session as! URLSession, task: dataTask, didCompleteWithError: nil)
@@ -117,5 +126,9 @@ class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
     override func searchForQuestions(with tag: String) {
         guard let encodedTag = tag.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { fatalError() }
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(encodedTag)&site=stackoverflow")
+    }
+
+    override func downloadInformationForQuestion(with id: Int) {
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow&filter=withBody")
     }
 }
