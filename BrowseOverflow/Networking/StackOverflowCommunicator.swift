@@ -16,6 +16,8 @@ extension URLSession : SessionProtocol {}
 
 protocol StackOverflowCommunicatorDelegate {
     func searchingForQuestionsFailed(with error: Error)
+    func fetchingQuestionBodyFailed(with error: Error)
+    func fetchingAnswersFailed(with error: Error)
 }
 
 struct StackOverflowCommunicatorError: Error {
@@ -27,6 +29,12 @@ struct StackOverflowCommunicatorError: Error {
 }
 
 class StackOverflowCommunicator: NSObject {
+    enum FetchType {
+        case topic
+        case question
+        case answer
+    }
+
     lazy var session: SessionProtocol = {
         let configuration = URLSessionConfiguration.default
         configuration.waitsForConnectivity = true
@@ -34,6 +42,7 @@ class StackOverflowCommunicator: NSObject {
     }()
     var dataTask: URLSessionDataTask?
     var delegate: StackOverflowCommunicatorDelegate?
+    var fetchType: FetchType?
 
     private func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
@@ -46,14 +55,17 @@ class StackOverflowCommunicator: NSObject {
 
     func searchForQuestions(with tag: String) {
         guard let encodedTag = tag.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { fatalError() }
+        fetchType = .topic
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(encodedTag)&site=stackoverflow")
     }
 
     func downloadInformationForQuestion(with id: Int) {
+        fetchType = .question
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow&filter=withBody")
     }
 
     func downloadAnswersToQuestion(with id: Int) {
+        fetchType = .answer
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)/answers?order=desc&sort=activity&site=stackoverflow")
     }
 
@@ -69,7 +81,13 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
         if let response = task.response as? HTTPURLResponse {
             if response.statusCode == 404 {
                 let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
-                delegate?.searchingForQuestionsFailed(with: error)
+                if let fetchType = self.fetchType {
+                    switch fetchType {
+                    case .topic: delegate?.searchingForQuestionsFailed(with: error)
+                    case .question: delegate?.fetchingQuestionBodyFailed(with: error)
+                    case .answer: delegate?.fetchingAnswersFailed(with: error)
+                    }
+                }
             }
         }
         cancelDataTask()

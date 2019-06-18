@@ -19,14 +19,17 @@ class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
 
     override func searchForQuestions(with tag: String) {
         guard let encodedTag = tag.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { fatalError() }
+        fetchType = .topic
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/search?pagesize=20&order=desc&sort=activity&tagged=\(encodedTag)&site=stackoverflow")
     }
 
     override func downloadInformationForQuestion(with id: Int) {
+        fetchType = .question
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow&filter=withBody")
     }
 
     override func downloadAnswersToQuestion(with id: Int) {
+        fetchType = .answer
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)/answers?order=desc&sort=activity&site=stackoverflow")
     }
 }

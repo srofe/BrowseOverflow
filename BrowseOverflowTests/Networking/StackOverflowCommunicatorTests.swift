@@ -23,6 +23,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     let sutAnswerPath = "/2.2/questions/12345/answers"
     let sutQueryTag = "ios"
     let sutQuestionId = 12345
+    let sutErrorFourOhFour = 404
 
     override func setUp() {
         super.setUp()
@@ -102,7 +103,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
         communicator.delegate = MockStackOverflowManager()
         communicator.searchForQuestions(with: sutQueryTag)
         let manager = communicator.delegate as? MockStackOverflowManager
-        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+        XCTAssertEqual(manager?.topicFailureErrorCode, sutErrorFourOhFour, "A StackOverflowCommunicator shall pass search errors to its delegate.")
     }
 
     func testReceiving404ResponseToQuestionBodyRequestPassesErrorToDelegate() {
@@ -111,7 +112,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
         communicator.delegate = MockStackOverflowManager()
         communicator.downloadInformationForQuestion(with: sutQuestionId)
         let manager = communicator.delegate as? MockStackOverflowManager
-        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+        XCTAssertEqual(manager?.bodyFailureErrorCode, sutErrorFourOhFour, "A StackOverflowCommunicator shall pass question body errors to its delegate.")
     }
 
     func testReceiving404ResponseToAnswerRequestPassesErrorToDelegate() {
@@ -120,6 +121,6 @@ class StackOverflowCommunicatorTests: XCTestCase {
         communicator.delegate = MockStackOverflowManager()
         communicator.downloadAnswersToQuestion(with: sutQuestionId)
         let manager = communicator.delegate as? MockStackOverflowManager
-        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+        XCTAssertEqual(manager?.answerFailureErrorCode, sutErrorFourOhFour, "A StackOverflowCommunicator shall pass answer request errors to its delegate.")
     }
 }
