@@ -113,6 +113,16 @@ class StackOverflowCommunicatorTests: XCTestCase {
         let manager = communicator.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.topicFailureErrorCode, 404)
     }
+
+    func testReceiving404ResponseToAnswerRequestPassesErrorToDelegate() {
+        let communicator = IntrospectionStackOverflowCommunicator()
+        communicator.session = sutDelegateUrlSession
+        communicator.delegate = MockStackOverflowManager()
+        communicator.downloadAnswersToQuestion(with: sutQuestionId)
+        let manager = communicator.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.topicFailureErrorCode, 404)
+
+    }
 }
 
 class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
@@ -130,5 +140,9 @@ class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
 
     override func downloadInformationForQuestion(with id: Int) {
         fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)?order=desc&sort=activity&site=stackoverflow&filter=withBody")
+    }
+
+    override func downloadAnswersToQuestion(with id: Int) {
+        fetchContentAtUrl(with: "https://api.stackexchange.com/2.2/questions/\(id)/answers?order=desc&sort=activity&site=stackoverflow")
     }
 }
