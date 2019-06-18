@@ -81,16 +81,20 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
         if let response = task.response as? HTTPURLResponse {
             if response.statusCode == 404 {
                 let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
-                if let fetchType = self.fetchType {
-                    switch fetchType {
-                    case .topic: delegate?.searchingForQuestionsFailed(with: error)
-                    case .question: delegate?.fetchingQuestionBodyFailed(with: error)
-                    case .answer: delegate?.fetchingAnswersFailed(with: error)
-                    }
-                }
+                sendErrorToDelegate(error)
             }
         }
         cancelDataTask()
         return
+    }
+
+    fileprivate func sendErrorToDelegate(_ error: StackOverflowCommunicatorError) {
+        if let fetchType = self.fetchType {
+            switch fetchType {
+            case .topic: delegate?.searchingForQuestionsFailed(with: error)
+            case .question: delegate?.fetchingQuestionBodyFailed(with: error)
+            case .answer: delegate?.fetchingAnswersFailed(with: error)
+            }
+        }
     }
 }
