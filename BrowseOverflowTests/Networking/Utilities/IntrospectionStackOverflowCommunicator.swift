@@ -10,10 +10,11 @@ import Foundation
 @testable import BrowseOverflow
 
 class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
+    var sessionError: Error? = nil
 
     override func fetchContentAtUrl(with text: String) {
         let dataTask = MockDataTask()
         dataTask.statusCode = 404
-        self.urlSession(self.session as! URLSession, task: dataTask, didCompleteWithError: nil)
+        self.urlSession(self.session as! URLSession, task: dataTask, didCompleteWithError: sessionError)
     }
 }

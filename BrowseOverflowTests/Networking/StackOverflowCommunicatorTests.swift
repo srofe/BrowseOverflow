@@ -24,6 +24,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     let sutQueryTag = "ios"
     let sutQuestionId = 12345
     let sutErrorFourOhFour = 404
+    let sutErrorNineOhNine = 999
 
     override func setUp() {
         super.setUp()
@@ -122,5 +123,15 @@ class StackOverflowCommunicatorTests: XCTestCase {
         communicator.downloadAnswersToQuestion(with: sutQuestionId)
         let manager = communicator.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.answerFailureErrorCode, sutErrorFourOhFour, "A StackOverflowCommunicator shall pass answer request errors to its delegate.")
+    }
+
+    func testSessionErrorToTopicSearchIsPassedToDelegate () {
+        let communicator = IntrospectionStackOverflowCommunicator()
+        communicator.session = sutDelegateUrlSession
+        communicator.delegate = MockStackOverflowManager()
+        communicator.sessionError = TestError.test
+        communicator.searchForQuestions(with: sutQueryTag)
+        let manager = communicator.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.topicFailureErrorCode, sutErrorNineOhNine, "A StackOverflowCommunicator shall pass search session error to its delegate.")
     }
 }

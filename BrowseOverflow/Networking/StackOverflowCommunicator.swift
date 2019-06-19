@@ -78,7 +78,9 @@ class StackOverflowCommunicator: NSObject {
 extension StackOverflowCommunicator: URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let response = task.response as? HTTPURLResponse {
+        if let error = error {
+            delegate?.searchingForQuestionsFailed(with: error)
+        } else if let response = task.response as? HTTPURLResponse {
             if response.statusCode == 404 {
                 let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
                 sendErrorToDelegate(error)

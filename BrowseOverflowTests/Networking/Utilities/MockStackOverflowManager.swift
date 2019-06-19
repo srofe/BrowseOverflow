@@ -18,6 +18,9 @@ class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorD
         if let error = error as? StackOverflowCommunicatorError {
             topicFailureErrorCode = error.errorCode
         }
+        if error is TestError {
+            topicFailureErrorCode = 999
+        }
     }
 
     func fetchingQuestionBodyFailed(with error: Error) {
