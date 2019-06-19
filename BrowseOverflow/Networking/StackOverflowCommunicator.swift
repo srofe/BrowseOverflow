@@ -79,13 +79,7 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
-            if let fetchType = fetchType {
-                switch fetchType {
-                case .topic: delegate?.searchingForQuestionsFailed(with: error)
-                case .question: delegate?.fetchingQuestionBodyFailed(with: error)
-                case .answer: delegate?.fetchingAnswersFailed(with: error)
-                }
-            }
+            sendErrorToDelegate(error)
         } else if let response = task.response as? HTTPURLResponse {
             if response.statusCode == 404 {
                 let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
@@ -96,7 +90,7 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
         return
     }
 
-    fileprivate func sendErrorToDelegate(_ error: StackOverflowCommunicatorError) {
+    fileprivate func sendErrorToDelegate(_ error: Error) {
         if let fetchType = self.fetchType {
             switch fetchType {
             case .topic: delegate?.searchingForQuestionsFailed(with: error)
