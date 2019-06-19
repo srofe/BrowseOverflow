@@ -9,7 +9,7 @@
 import Foundation
 @testable import BrowseOverflow
 
-class IntrospectionStackOverflowCommunicator: StackOverflowCommunicator {
+class ErrorInsertingStackOverflowCommunicator: StackOverflowCommunicator {
     var sessionError: Error? = nil
 
     override func fetchContentAtUrl(with text: String) {

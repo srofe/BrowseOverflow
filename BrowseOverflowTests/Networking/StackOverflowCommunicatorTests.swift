@@ -99,7 +99,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testReceiving404ResponseToTopicSearchPassesErrorToDelegate() {
-        let communicator = IntrospectionStackOverflowCommunicator()
+        let communicator = ErrorInsertingStackOverflowCommunicator()
         communicator.session = sutDelegateUrlSession
         communicator.delegate = MockStackOverflowManager()
         communicator.searchForQuestions(with: sutQueryTag)
@@ -108,7 +108,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testReceiving404ResponseToQuestionBodyRequestPassesErrorToDelegate() {
-        let communicator = IntrospectionStackOverflowCommunicator()
+        let communicator = ErrorInsertingStackOverflowCommunicator()
         communicator.session = sutDelegateUrlSession
         communicator.delegate = MockStackOverflowManager()
         communicator.downloadInformationForQuestion(with: sutQuestionId)
@@ -117,7 +117,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testReceiving404ResponseToAnswerRequestPassesErrorToDelegate() {
-        let communicator = IntrospectionStackOverflowCommunicator()
+        let communicator = ErrorInsertingStackOverflowCommunicator()
         communicator.session = sutDelegateUrlSession
         communicator.delegate = MockStackOverflowManager()
         communicator.downloadAnswersToQuestion(with: sutQuestionId)
@@ -126,7 +126,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testSessionErrorToTopicSearchIsPassedToDelegate () {
-        let communicator = IntrospectionStackOverflowCommunicator()
+        let communicator = ErrorInsertingStackOverflowCommunicator()
         communicator.session = sutDelegateUrlSession
         communicator.delegate = MockStackOverflowManager()
         communicator.sessionError = TestError.test
@@ -136,7 +136,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testSessionErrorToQuestionBodyRequesIsPassedToDelegate() {
-        let communicator = IntrospectionStackOverflowCommunicator()
+        let communicator = ErrorInsertingStackOverflowCommunicator()
         communicator.session = sutDelegateUrlSession
         communicator.delegate = MockStackOverflowManager()
         communicator.sessionError = TestError.test
@@ -146,7 +146,7 @@ class StackOverflowCommunicatorTests: XCTestCase {
     }
 
     func testSessionErrorToAnserRequesIsPassedToDelegate() {
-        let communicator = IntrospectionStackOverflowCommunicator()
+        let communicator = ErrorInsertingStackOverflowCommunicator()
         communicator.session = sutDelegateUrlSession
         communicator.delegate = MockStackOverflowManager()
         communicator.sessionError = TestError.test
