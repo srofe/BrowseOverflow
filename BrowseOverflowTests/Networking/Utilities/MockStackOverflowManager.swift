@@ -36,5 +36,8 @@ class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorD
         if let error = error as? StackOverflowCommunicatorError {
             answerFailureErrorCode = error.errorCode
         }
+        if error is TestError {
+            answerFailureErrorCode = 999
+        }
     }
 }

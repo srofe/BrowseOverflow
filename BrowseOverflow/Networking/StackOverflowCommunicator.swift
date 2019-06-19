@@ -83,7 +83,7 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
                 switch fetchType {
                 case .topic: delegate?.searchingForQuestionsFailed(with: error)
                 case .question: delegate?.fetchingQuestionBodyFailed(with: error)
-                default: break
+                case .answer: delegate?.fetchingAnswersFailed(with: error)
                 }
             }
         } else if let response = task.response as? HTTPURLResponse {
