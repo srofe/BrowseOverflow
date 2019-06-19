@@ -80,11 +80,9 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
             sendErrorToDelegate(error)
-        } else if let response = task.response as? HTTPURLResponse {
-            if response.statusCode == 404 {
-                let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
-                sendErrorToDelegate(error)
-            }
+        } else if let response = task.response as? HTTPURLResponse, (400...499).contains(response.statusCode) {
+            let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
+            sendErrorToDelegate(error)
         }
         cancelDataTask()
         return
