@@ -134,4 +134,15 @@ class StackOverflowCommunicatorTests: XCTestCase {
         let manager = communicator.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.topicFailureErrorCode, sutErrorNineOhNine, "A StackOverflowCommunicator shall pass search session error to its delegate.")
     }
+
+    func testSessionErrorToQuestionBodyRequesIsPassedToDelegate() {
+        let communicator = IntrospectionStackOverflowCommunicator()
+        communicator.session = sutDelegateUrlSession
+        communicator.delegate = MockStackOverflowManager()
+        communicator.sessionError = TestError.test
+        communicator.downloadInformationForQuestion(with: sutQuestionId)
+        let manager = communicator.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.bodyFailureErrorCode, sutErrorNineOhNine, "A StackOverflowCommunicator shall pass question body session error to its delegate.")
+
+    }
 }

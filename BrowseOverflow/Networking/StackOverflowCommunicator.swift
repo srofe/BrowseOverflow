@@ -79,7 +79,13 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
-            delegate?.searchingForQuestionsFailed(with: error)
+            if let fetchType = fetchType {
+                switch fetchType {
+                case .topic: delegate?.searchingForQuestionsFailed(with: error)
+                case .question: delegate?.fetchingQuestionBodyFailed(with: error)
+                default: break
+                }
+            }
         } else if let response = task.response as? HTTPURLResponse {
             if response.statusCode == 404 {
                 let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
