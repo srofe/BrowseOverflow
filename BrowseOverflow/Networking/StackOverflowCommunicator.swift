@@ -44,7 +44,7 @@ class StackOverflowCommunicator: NSObject {
     var delegate: StackOverflowCommunicatorDelegate?
     var fetchType: FetchType?
 
-    private func fetchContentAtUrl(with text: String) {
+    func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
         if dataTask != nil {
             cancelDataTask()
