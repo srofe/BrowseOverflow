@@ -154,4 +154,24 @@ class StackOverflowCommunicatorTests: XCTestCase {
         let manager = communicator.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.answerFailureErrorCode, sutErrorNineOhNine, "A StackOverflowCommunicator shall pass answer request session error to its delegate.")
     }
+
+    func testSuccessfulQuestionSearchPassesDataToDelegate() {
+        let sut = DataInsertingStackOverflowCommunicator()
+        sut.session = sutDelegateUrlSession
+        sut.delegate = MockStackOverflowManager()
+        let dataToSend = "Topic Search String".data(using: .utf8)!
+        let dataTask = MockDataTask()
+        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        sut.searchForQuestions(with: sutQueryTag)
+        let manager = sut.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.topicSearchString, "Topic Search String")
+    }
+}
+
+class DataInsertingStackOverflowCommunicator: StackOverflowCommunicator {
+
+    override func fetchContentAtUrl(with text: String) {
+        let dataTask = MockDataTask()
+        self.urlSession(self.session as! URLSession, task: dataTask, didCompleteWithError: nil)
+    }
 }

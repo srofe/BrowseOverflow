@@ -18,6 +18,7 @@ protocol StackOverflowCommunicatorDelegate {
     func searchingForQuestionsFailed(with error: Error)
     func fetchingQuestionBodyFailed(with error: Error)
     func fetchingAnswersFailed(with error: Error)
+    func received(questionsJson: String)
 }
 
 struct StackOverflowCommunicatorError: Error {
@@ -43,6 +44,7 @@ class StackOverflowCommunicator: NSObject {
     var dataTask: URLSessionDataTask?
     var delegate: StackOverflowCommunicatorDelegate?
     var fetchType: FetchType?
+    private var receivedData: Data?
 
     func fetchContentAtUrl(with text: String) {
         guard let url = URL(string: text) else { fatalError() }
@@ -77,15 +79,32 @@ class StackOverflowCommunicator: NSObject {
 
 extension StackOverflowCommunicator: URLSessionDataDelegate {
 
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        if receivedData == nil {
+            receivedData = Data()
+        }
+        receivedData = data
+    }
+
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
             sendErrorToDelegate(error)
-        } else if let response = task.response as? HTTPURLResponse, (400...499).contains(response.statusCode) {
-            let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
-            sendErrorToDelegate(error)
+        } else if let response = task.response as? HTTPURLResponse {
+            if (400...499).contains(response.statusCode) {
+                let error = StackOverflowCommunicatorError(errorCode: response.statusCode, kind: .statusError)
+                sendErrorToDelegate(error)
+            } else {
+                sendDataToDelegate()
+            }
         }
         cancelDataTask()
         return
+    }
+
+    fileprivate func sendDataToDelegate() {
+        if let data = receivedData, let jsonData = String(data: data, encoding: .utf8) {
+            delegate?.received(questionsJson: jsonData)
+        }
     }
 
     fileprivate func sendErrorToDelegate(_ error: Error) {
