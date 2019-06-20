@@ -143,7 +143,15 @@ class QuestionCreationWorkflowTests: XCTestCase {
 
     func testAskingForAnswerMenansRequestionData() {
         sut.fetchAnswers(for: sutQuestion)
-        XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchAnswers)
+        XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchAnswers, "The communicator shall be asked to fetch answers to a question.")
+    }
+
+    func testDelegateNotifiedOfFailureToFetchAnswers() {
+        sut.fetchingAnswersFailed(with: sutUnderlyingError)
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertEqual(delegateError?.kind, .answersFetch, "The error reported when fetching answer shall be an answersFetch error.")
+        XCTAssertNotNil(underlyingError, "The delegate shall be notified of any error when fetching answers to a Question.")
     }
 }
 

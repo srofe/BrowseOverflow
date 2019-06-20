@@ -21,6 +21,7 @@ struct StackOverflowError: Error {
     enum ErrorKind {
         case questionSearch
         case questionBodyFetch
+        case answersFetch
     }
     let underlyingError: Error?
     let kind: ErrorKind
@@ -55,6 +56,10 @@ class StackOverflowManager {
 
     func fetchAnswers(for question: Question) {
         communicator?.downloadAnswersToQuestion(with: question.id)
+    }
+
+    func fetchingAnswersFailed(with error: Error) {
+        tellDelegateAboutError(kind: .answersFetch, underlyingError: error)
     }
 
     func received(questionsJson: String) {

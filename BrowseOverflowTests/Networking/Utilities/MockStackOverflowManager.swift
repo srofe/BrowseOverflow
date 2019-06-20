@@ -42,7 +42,7 @@ class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorD
         }
     }
 
-    func fetchingAnswersFailed(with error: Error) {
+    override func fetchingAnswersFailed(with error: Error) {
         if let error = error as? StackOverflowCommunicatorError {
             answerFailureErrorCode = error.errorCode
         }
