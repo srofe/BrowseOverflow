@@ -53,6 +53,10 @@ class StackOverflowManager {
         tellDelegateAboutError(kind: .questionBodyFetch, underlyingError: error)
     }
 
+    func fetchAnswers(for question: Question) {
+        communicator?.downloadAnswersToQuestion(with: question.id)
+    }
+
     func received(questionsJson: String) {
         do {
             if let questions = try questionBuilder?.questions(from: questionsJson) {

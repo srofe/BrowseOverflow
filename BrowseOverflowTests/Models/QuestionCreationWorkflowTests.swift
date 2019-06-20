@@ -140,6 +140,11 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.received(questionBodyJson: "Fake JSON")
         XCTAssertNil(sut.questionNeedingBody, "The question needing a body shall be set to nil once the body has been received.")
     }
+
+    func testAskingForAnswerMenansRequestionData() {
+        sut.fetchAnswers(for: sutQuestion)
+        XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchAnswers)
+    }
 }
 
 enum TestError: Error {
@@ -162,11 +167,15 @@ class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
 class MockStackOverflowCommunicator : StackOverflowCommunicator {
     var wasAskedToFetchQuestions = false
     var wasAskedToFetchBody = false
+    var wasAskedToFetchAnswers = false
     override func searchForQuestions(with tag: String) {
         wasAskedToFetchQuestions = true
     }
     override func downloadInformationForQuestion(with id: Int) {
         wasAskedToFetchBody = true
+    }
+    override func downloadAnswersToQuestion(with id: Int) {
+        wasAskedToFetchAnswers = true
     }
 }
 
