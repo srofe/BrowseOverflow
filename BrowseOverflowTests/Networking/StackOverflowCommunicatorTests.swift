@@ -166,12 +166,16 @@ class StackOverflowCommunicatorTests: XCTestCase {
         let manager = sut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.topicSearchString, "Topic Search String")
     }
-}
 
-class DataInsertingStackOverflowCommunicator: StackOverflowCommunicator {
-
-    override func fetchContentAtUrl(with text: String) {
+    func testSuccessfulBodyFetchPassesDataToDelegate() {
+        let sut = DataInsertingStackOverflowCommunicator()
+        sut.session = sutDelegateUrlSession
+        sut.delegate = MockStackOverflowManager()
+        let dataToSend = "Topic Search String".data(using: .utf8)!
         let dataTask = MockDataTask()
-        self.urlSession(self.session as! URLSession, task: dataTask, didCompleteWithError: nil)
+        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        sut.downloadInformationForQuestion(with: sutQuestionId)
+        let manager = sut.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.bodySearchString, "Topic Search String")
     }
 }

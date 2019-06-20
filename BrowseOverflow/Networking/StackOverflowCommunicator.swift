@@ -19,6 +19,7 @@ protocol StackOverflowCommunicatorDelegate {
     func fetchingQuestionBodyFailed(with error: Error)
     func fetchingAnswersFailed(with error: Error)
     func received(questionsJson: String)
+    func received(questionBodyJson: String)
 }
 
 struct StackOverflowCommunicatorError: Error {
@@ -103,7 +104,13 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
 
     fileprivate func sendDataToDelegate() {
         if let data = receivedData, let jsonData = String(data: data, encoding: .utf8) {
-            delegate?.received(questionsJson: jsonData)
+            if let fetchType = self.fetchType {
+                switch fetchType {
+                case .topic: delegate?.received(questionsJson: jsonData)
+                case .question: delegate?.received(questionBodyJson: jsonData)
+                case .answer: break
+                }
+            }
         }
     }
 
