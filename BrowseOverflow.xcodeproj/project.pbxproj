@@ -162,9 +162,9 @@
 			children = (
 				F420611122840E7600D4072E /* Info.plist */,
 				F42061342288F95500D4072E /* Models */,
+				F471E5DB22BCAC8000B994D6 /* ViewControllers */,
 				F47280B422A0F65500E70075 /* Networking */,
 				F497208022B7C9F100032859 /* XCTestExtension.swift */,
-				F471E5D522BC94BA00B994D6 /* BrowseOverflowViewControllerTests.swift */,
 			);
 			path = BrowseOverflowTests;
 			sourceTree = "<group>";
@@ -225,6 +225,14 @@
 				F9E486CD22A09A7200659342 /* AnswerBuilderTests.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		F471E5DB22BCAC8000B994D6 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				F471E5D522BC94BA00B994D6 /* BrowseOverflowViewControllerTests.swift */,
+			);
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 		F47280B422A0F65500E70075 /* Networking */ = {
