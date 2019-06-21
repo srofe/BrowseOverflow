@@ -15,5 +15,6 @@ class BrowseOverflowViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = dataProvider
+        tableView.delegate = dataProvider
     }
 }

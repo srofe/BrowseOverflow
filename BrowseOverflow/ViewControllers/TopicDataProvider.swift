@@ -22,3 +22,6 @@ extension TopicDataProvider: UITableViewDataSource {
         return UITableViewCell()
     }
 }
+
+extension TopicDataProvider: UITableViewDelegate {
+}

@@ -33,4 +33,8 @@ class BrowseOverflowViewControllerTests: XCTestCase {
     func testViewControllerHasDataSourceProperty() {
         XCTAssertTrue(sut.tableView.dataSource is TopicDataProvider, "The table view data source shall be a TopicDataProvider.")
     }
+
+    func testViewControllerHasDelegateProperty() {
+        XCTAssertTrue(sut.tableView.delegate is TopicDataProvider, "The table view delegate shall be a TopicDataProvider.")
+    }
 }
