@@ -16,7 +16,7 @@ extension URLSession : SessionProtocol {}
 
 protocol StackOverflowCommunicatorDelegate {
     func searchingForQuestionsFailed(with error: Error)
-    func fetchingQuestionBodyFailed(with error: Error)
+    func fetchingQuestionFailed(with error: Error)
     func fetchingAnswersFailed(with error: Error)
     func received(questionsJson: String)
     func received(questionBodyJson: String)
@@ -118,7 +118,7 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
         if let fetchType = self.fetchType {
             switch fetchType {
             case .topic: delegate?.searchingForQuestionsFailed(with: error)
-            case .question: delegate?.fetchingQuestionBodyFailed(with: error)
+            case .question: delegate?.fetchingQuestionFailed(with: error)
             case .answer: delegate?.fetchingAnswersFailed(with: error)
             }
         }

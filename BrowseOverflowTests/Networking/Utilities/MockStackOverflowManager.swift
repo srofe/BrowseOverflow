@@ -33,7 +33,7 @@ class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorD
         }
     }
 
-    func fetchingQuestionBodyFailed(with error: Error) {
+    override func fetchingQuestionFailed(with error: Error) {
         if let error = error as? StackOverflowCommunicatorError {
             bodyFailureErrorCode = error.errorCode
         }
