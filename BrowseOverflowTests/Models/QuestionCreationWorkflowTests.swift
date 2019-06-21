@@ -17,6 +17,7 @@ class QuestionCreationWorkflowTests: XCTestCase {
     let sutJsonString = "Fake JSON"
     var sutUnderlyingError: Error!
     var sutFakeQuestionBuilder: FakeQuestionBuilder!
+    var sutFakeAnswerBuilder: FakeAnswerBuilder!
     var sutQuestionArray: [Question]!
     var sutQuestion: Question!
 
@@ -26,9 +27,11 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.delegate = MockStackOverflowManagerDelegate()
         sut.communicator = MockStackOverflowCommunicator()
         sutFakeQuestionBuilder = FakeQuestionBuilder()
+        sutFakeAnswerBuilder = FakeAnswerBuilder()
         sutQuestionArray = [Question()]
         sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
         sut.questionBuilder = sutFakeQuestionBuilder
+        sut.answerBuilder = sutFakeAnswerBuilder
         sutUnderlyingError = TestError.test
         sutQuestion = Question()
         sutQuestion.title = "A question to ask."
@@ -37,6 +40,7 @@ class QuestionCreationWorkflowTests: XCTestCase {
     override func tearDown() {
         sutQuestion = nil
         sutQuestionArray = nil
+        sutFakeAnswerBuilder = nil
         sutFakeQuestionBuilder = nil
         sutUnderlyingError = nil
         sut = nil
@@ -140,6 +144,35 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.received(questionBodyJson: "Fake JSON")
         XCTAssertNil(sut.questionNeedingBody, "The question needing a body shall be set to nil once the body has been received.")
     }
+
+    func testAskingForAnswerMenansRequestionData() {
+        sut.fetchAnswers(for: sutQuestion)
+        XCTAssertTrue((sut.communicator as? MockStackOverflowCommunicator)!.wasAskedToFetchAnswers, "The communicator shall be asked to fetch answers to a question.")
+    }
+
+    func testDelegateNotifiedOfFailureToFetchAnswers() {
+        sut.fetchingAnswersFailed(with: sutUnderlyingError)
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertEqual(delegateError?.kind, .answersFetch, "The error reported when fetching answer shall be an answersFetch error.")
+        XCTAssertNotNil(underlyingError, "The delegate shall be notified of any error when fetching answers to a Question.")
+    }
+
+    func testManagerPassesRetrievedAnswersToAnswerBuilder() {
+        sut.fetchAnswers(for: sutQuestion)
+        sut.received(answerJson: "Fake JSON")
+        XCTAssertEqual((sut.answerBuilder as? FakeAnswerBuilder)?.json, "Fake JSON", "The manager shall pass the answer JSON string to the AnswerBuilder.")
+    }
+
+    func testDelegateNotifiedOfErrorWhenAnswerBuilderFails() {
+        sutFakeAnswerBuilder.errorToSet = sutUnderlyingError
+        sut.answerBuilder = sutFakeAnswerBuilder
+        sut.fetchAnswers(for: sutQuestion)
+        sut.received(answerJson: "Fake JSON")
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertNotNil(underlyingError, "The delegate shall have found out about an error when the builder returns nil.")
+    }
 }
 
 enum TestError: Error {
@@ -162,11 +195,15 @@ class MockStackOverflowManagerDelegate : StackOverflowManagerDelegate {
 class MockStackOverflowCommunicator : StackOverflowCommunicator {
     var wasAskedToFetchQuestions = false
     var wasAskedToFetchBody = false
-    func searchForQuestions(with tag: String) {
+    var wasAskedToFetchAnswers = false
+    override func searchForQuestions(with tag: String) {
         wasAskedToFetchQuestions = true
     }
-    func downloadInformationQuestion(id: Int) {
+    override func downloadInformationForQuestion(with id: Int) {
         wasAskedToFetchBody = true
+    }
+    override func downloadAnswersToQuestion(with id: Int) {
+        wasAskedToFetchAnswers = true
     }
 }
 
@@ -186,6 +223,18 @@ class FakeQuestionBuilder : QuestionBuilderProtocol {
 
     func questionBody(for question: inout Question, from json: String) {
         self.questionToFill = question
+        self.json = json
+    }
+}
+
+class FakeAnswerBuilder : AnswerBuilderProtocol {
+    var json = ""
+    var errorToSet: Error? = nil
+
+    func addAnswer(to question: inout Question, containing json: String) throws {
+        if let error = errorToSet {
+            throw error
+        }
         self.json = json
     }
 }
