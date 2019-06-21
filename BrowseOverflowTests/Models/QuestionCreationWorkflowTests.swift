@@ -163,6 +163,16 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.received(answerJson: "Fake JSON")
         XCTAssertEqual((sut.answerBuilder as? FakeAnswerBuilder)?.json, "Fake JSON", "The manager shall pass the answer JSON string to the AnswerBuilder.")
     }
+
+    func testDelegateNotifiedOfErrorWhenAnswerBuilderFails() {
+        sutFakeAnswerBuilder.errorToSet = sutUnderlyingError
+        sut.answerBuilder = sutFakeAnswerBuilder
+        sut.fetchAnswers(for: sutQuestion)
+        sut.received(answerJson: "Fake JSON")
+        let delegateError = sut.delegate?.error as? StackOverflowError
+        let underlyingError = delegateError?.underlyingError
+        XCTAssertNotNil(underlyingError, "The delegate shall have found out about an error when the builder returns nil.")
+    }
 }
 
 enum TestError: Error {
@@ -219,8 +229,12 @@ class FakeQuestionBuilder : QuestionBuilderProtocol {
 
 class FakeAnswerBuilder : AnswerBuilderProtocol {
     var json = ""
+    var errorToSet: Error? = nil
 
     func addAnswer(to question: inout Question, containing json: String) throws {
+        if let error = errorToSet {
+            throw error
+        }
         self.json = json
     }
 }

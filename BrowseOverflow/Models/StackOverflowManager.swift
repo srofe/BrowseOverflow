@@ -83,7 +83,11 @@ class StackOverflowManager {
     }
 
     func received(answerJson: String) {
-        try? answerBuilder?.addAnswer(to: &questionToFill!, containing: answerJson)
+        do  {
+            try answerBuilder?.addAnswer(to: &questionToFill!, containing: answerJson)
+        } catch let underlyingError {
+            tellDelegateAboutError(kind: .answersFetch, underlyingError: underlyingError)
+        }
     }
 
     private func tellDelegateAboutError(kind: StackOverflowError.ErrorKind, underlyingError: Error?) {
