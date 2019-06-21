@@ -190,4 +190,18 @@ class StackOverflowCommunicatorTests: XCTestCase {
         let manager = sut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.answerSearchString, "Answers to Question")
     }
+
+    func testAdditionalDataAppendedToDownload() {
+        let sut = DataInsertingStackOverflowCommunicator()
+        sut.session = sutDelegateUrlSession
+        sut.delegate = MockStackOverflowManager()
+        var dataToSend = "Answers to Question".data(using: .utf8)!
+        let dataTask = MockDataTask()
+        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        dataToSend = ", which you have asked.".data(using: .utf8)!
+        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        sut.downloadAnswersToQuestion(with: sutQuestionId)
+        let manager = sut.delegate as? MockStackOverflowManager
+        XCTAssertEqual(manager?.answerSearchString, "Answers to Question, which you have asked.")
+    }
 }

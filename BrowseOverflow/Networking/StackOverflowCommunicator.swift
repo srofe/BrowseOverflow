@@ -85,7 +85,7 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
         if receivedData == nil {
             receivedData = Data()
         }
-        receivedData = data
+        receivedData?.append(data)
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
