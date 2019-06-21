@@ -41,13 +41,18 @@ class BrowseOverflowViewControllerTests: XCTestCase {
     func testOneTableRowForOneTopicInDataProvider() {
         let dataSource = TopicDataProvider()
         dataSource.topics.append(Topic(name: "iPhone", tag: "iphone"))
-        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 1)
+        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 1, "The table view shall have the same number of rows as there are topics.")
     }
 
     func testTwoTableRowsForTwoTopicsInDataProvider() {
         let dataSource = TopicDataProvider()
         dataSource.topics.append(Topic(name: "iPhone", tag: "iphone"))
         dataSource.topics.append(Topic(name: "macOS", tag: "macos"))
-        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 2)
+        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 2, "The table view shall have the same number of rows as there are topics.")
+    }
+
+    func testOnlyOneSectonInTheTableView() {
+        let dataSource = TopicDataProvider()
+        XCTAssertEqual(dataSource.numberOfSections(in: sut.tableView), 1, "There shall only be one section in the table view.")
     }
 }
