@@ -13,15 +13,18 @@ class BrowseOverflowViewControllerTests: XCTestCase {
 
     // The System Under Test - a BrowseOverflowViewController
     var sut: BrowseOverflowViewController!
+    var sutDataProvider: TopicDataProvider!
 
     override func setUp() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         sut = storyboard.instantiateViewController(withIdentifier: "BrowseOverflowViewController") as? BrowseOverflowViewController
         sut.loadViewIfNeeded()
+        sutDataProvider = TopicDataProvider()
         super.setUp()
     }
 
     override func tearDown() {
+        sutDataProvider = nil
         sut = nil
         super.tearDown()
     }
@@ -39,20 +42,17 @@ class BrowseOverflowViewControllerTests: XCTestCase {
     }
 
     func testOneTableRowForOneTopicInDataProvider() {
-        let dataSource = TopicDataProvider()
-        dataSource.topics.append(Topic(name: "iPhone", tag: "iphone"))
-        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 1, "The table view shall have the same number of rows as there are topics.")
+        sutDataProvider.topics.append(Topic(name: "iPhone", tag: "iphone"))
+        XCTAssertEqual(sutDataProvider.tableView(sut.tableView, numberOfRowsInSection: 0), 1, "The table view shall have the same number of rows as there are topics.")
     }
 
     func testTwoTableRowsForTwoTopicsInDataProvider() {
-        let dataSource = TopicDataProvider()
-        dataSource.topics.append(Topic(name: "iPhone", tag: "iphone"))
-        dataSource.topics.append(Topic(name: "macOS", tag: "macos"))
-        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 2, "The table view shall have the same number of rows as there are topics.")
+        sutDataProvider.topics.append(Topic(name: "iPhone", tag: "iphone"))
+        sutDataProvider.topics.append(Topic(name: "macOS", tag: "macos"))
+        XCTAssertEqual(sutDataProvider.tableView(sut.tableView, numberOfRowsInSection: 0), 2, "The table view shall have the same number of rows as there are topics.")
     }
 
     func testOnlyOneSectonInTheTableView() {
-        let dataSource = TopicDataProvider()
-        XCTAssertEqual(dataSource.numberOfSections(in: sut.tableView), 1, "There shall only be one section in the table view.")
+        XCTAssertEqual(sutDataProvider.numberOfSections(in: sut.tableView), 1, "There shall only be one section in the table view.")
     }
 }
