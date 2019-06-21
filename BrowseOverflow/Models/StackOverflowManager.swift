@@ -35,7 +35,9 @@ class StackOverflowManager {
     var delegate: StackOverflowManagerDelegate? = nil
     var communicator: StackOverflowCommunicator? = nil
     var questionBuilder: QuestionBuilderProtocol? = nil
+    var answerBuilder: AnswerBuilderProtocol? = nil
     var questionNeedingBody: Question? = nil
+    var questionToFill: Question? = nil
 
     func fetchQuestions(on topic: Topic) {
         communicator?.searchForQuestions(with: topic.tag)
@@ -55,6 +57,7 @@ class StackOverflowManager {
     }
 
     func fetchAnswers(for question: Question) {
+        questionToFill = question
         communicator?.downloadAnswersToQuestion(with: question.id)
     }
 
@@ -77,6 +80,10 @@ class StackOverflowManager {
     func received(questionBodyJson: String) {
         questionBuilder?.questionBody(for: &questionNeedingBody!, from: questionBodyJson)
         self.questionNeedingBody = nil
+    }
+
+    func received(answerJson: String) {
+        try? answerBuilder?.addAnswer(to: &questionToFill!, containing: answerJson)
     }
 
     private func tellDelegateAboutError(kind: StackOverflowError.ErrorKind, underlyingError: Error?) {

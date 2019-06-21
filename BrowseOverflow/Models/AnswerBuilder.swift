@@ -14,7 +14,11 @@ enum AnswerBuilderError : Error {
     case missionData
 }
 
-struct AnswerBuilder {
+protocol AnswerBuilderProtocol {
+    func addAnswer(to question: inout Question, containing json: String) throws
+}
+
+struct AnswerBuilder : AnswerBuilderProtocol {
     func addAnswer(to question: inout Question, containing json: String) throws {
         guard let jsonData = json.data(using: .utf8) else { throw AnswerBuilderError.dataEncoding }
         guard let queryDictionary = try? JSONSerialization.jsonObject(with: jsonData) as? Dictionary<String,Any>, JSONSerialization.isValidJSONObject(queryDictionary) else { throw AnswerBuilderError.invalidJson }

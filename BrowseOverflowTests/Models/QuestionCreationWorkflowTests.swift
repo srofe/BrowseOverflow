@@ -17,6 +17,7 @@ class QuestionCreationWorkflowTests: XCTestCase {
     let sutJsonString = "Fake JSON"
     var sutUnderlyingError: Error!
     var sutFakeQuestionBuilder: FakeQuestionBuilder!
+    var sutFakeAnswerBuilder: FakeAnswerBuilder!
     var sutQuestionArray: [Question]!
     var sutQuestion: Question!
 
@@ -26,9 +27,11 @@ class QuestionCreationWorkflowTests: XCTestCase {
         sut.delegate = MockStackOverflowManagerDelegate()
         sut.communicator = MockStackOverflowCommunicator()
         sutFakeQuestionBuilder = FakeQuestionBuilder()
+        sutFakeAnswerBuilder = FakeAnswerBuilder()
         sutQuestionArray = [Question()]
         sutFakeQuestionBuilder.arrayToReturn = sutQuestionArray
         sut.questionBuilder = sutFakeQuestionBuilder
+        sut.answerBuilder = sutFakeAnswerBuilder
         sutUnderlyingError = TestError.test
         sutQuestion = Question()
         sutQuestion.title = "A question to ask."
@@ -37,6 +40,7 @@ class QuestionCreationWorkflowTests: XCTestCase {
     override func tearDown() {
         sutQuestion = nil
         sutQuestionArray = nil
+        sutFakeAnswerBuilder = nil
         sutFakeQuestionBuilder = nil
         sutUnderlyingError = nil
         sut = nil
@@ -153,6 +157,12 @@ class QuestionCreationWorkflowTests: XCTestCase {
         XCTAssertEqual(delegateError?.kind, .answersFetch, "The error reported when fetching answer shall be an answersFetch error.")
         XCTAssertNotNil(underlyingError, "The delegate shall be notified of any error when fetching answers to a Question.")
     }
+
+    func testManagerPassesRetrievedAnswersToAnswerBuilder() {
+        sut.fetchAnswers(for: sutQuestion)
+        sut.received(answerJson: "Fake JSON")
+        XCTAssertEqual((sut.answerBuilder as? FakeAnswerBuilder)?.json, "Fake JSON", "The manager shall pass the answer JSON string to the AnswerBuilder.")
+    }
 }
 
 enum TestError: Error {
@@ -203,6 +213,14 @@ class FakeQuestionBuilder : QuestionBuilderProtocol {
 
     func questionBody(for question: inout Question, from json: String) {
         self.questionToFill = question
+        self.json = json
+    }
+}
+
+class FakeAnswerBuilder : AnswerBuilderProtocol {
+    var json = ""
+
+    func addAnswer(to question: inout Question, containing json: String) throws {
         self.json = json
     }
 }
