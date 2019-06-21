@@ -15,6 +15,7 @@ class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorD
     var answerFailureErrorCode = 0
     var topicSearchString = ""
     var bodySearchString = ""
+    var answerSearchString = ""
 
     override func received(questionsJson: String) {
         topicSearchString = questionsJson
@@ -22,6 +23,10 @@ class MockStackOverflowManager: StackOverflowManager, StackOverflowCommunicatorD
 
     override func received(questionBodyJson: String) {
         bodySearchString = questionBodyJson
+    }
+
+    override func received(answerJson: String) {
+        answerSearchString = answerJson
     }
 
     override func searchingForQuestionsFailed(with error: Error) {

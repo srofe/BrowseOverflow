@@ -20,6 +20,7 @@ protocol StackOverflowCommunicatorDelegate {
     func fetchingAnswersFailed(with error: Error)
     func received(questionsJson: String)
     func received(questionBodyJson: String)
+    func received(answerJson: String)
 }
 
 struct StackOverflowCommunicatorError: Error {
@@ -108,7 +109,7 @@ extension StackOverflowCommunicator: URLSessionDataDelegate {
                 switch fetchType {
                 case .topic: delegate?.received(questionsJson: jsonData)
                 case .question: delegate?.received(questionBodyJson: jsonData)
-                case .answer: break
+                case .answer: delegate?.received(answerJson: jsonData)
                 }
             }
         }
