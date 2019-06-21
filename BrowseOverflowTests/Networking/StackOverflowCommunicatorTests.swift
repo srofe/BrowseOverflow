@@ -13,10 +13,11 @@ class StackOverflowCommunicatorTests: XCTestCase {
 
     // The System Under Test - a StackOverflowCommunicator
     var sut: StackOverflowCommunicator!
+    var errorSut: ErrorInsertingStackOverflowCommunicator!
+    var dataSut: DataInsertingStackOverflowCommunicator!
 
     // Test constants.
     var sutDelegateUrlSession: URLSession!
-    var sutMockUrlSession: MockURLSession!
     let sutHost = "api.stackexchange.com"
     let sutSearchPath = "/2.2/search"
     let sutQuestionPath = "/2.2/questions/12345"
@@ -28,180 +29,155 @@ class StackOverflowCommunicatorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+
         sut = StackOverflowCommunicator()
+        sut.session = MockURLSession()
+        sut.dataTask = MockDataTask()
+
         let configuration = URLSessionConfiguration.default
         sutDelegateUrlSession = URLSession(configuration: configuration, delegate: sut, delegateQueue: nil)
-        sutMockUrlSession = MockURLSession()
+
+        errorSut = ErrorInsertingStackOverflowCommunicator()
+        errorSut.session = sutDelegateUrlSession
+        errorSut.delegate = MockStackOverflowManager()
+
+        dataSut = DataInsertingStackOverflowCommunicator()
+        dataSut.delegate = MockStackOverflowManager()
+        dataSut.session = sutDelegateUrlSession
     }
 
     override func tearDown() {
-        sutMockUrlSession = nil
         sutDelegateUrlSession = nil
+        dataSut = nil
+        errorSut = nil
         sut = nil
         super.tearDown()
     }
 
     func testSearchingForQuestionsOnTopicCallsTopicApi() {
-        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: sutQueryTag)
         let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","tagged":"ios","site":"stackoverflow"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for searching tags.")
+        AssertEquivalent(url: (sut.session as! MockURLSession).fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for searching tags.")
     }
 
     func testSearchingForQuestionOnTopicWithSpacesIsValid() {
-        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: "unit testing")
         let urlElements = (sutHost, sutSearchPath, ["pagesize":"20","order":"desc","sort":"activity","site":"stackoverflow", "tagged":"unit testing"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall allow for search terms with spaces.")
+        AssertEquivalent(url: (sut.session as! MockURLSession).fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall allow for search terms with spaces.")
     }
 
     func testFillingInQuestionBodyCallsQuestionAPI() {
-        sut.session = sutMockUrlSession
         sut.downloadInformationForQuestion(with: sutQuestionId)
         let urlElements = (sutHost, sutQuestionPath, ["order":"desc","sort":"activity","site":"stackoverflow", "filter":"withBody"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        AssertEquivalent(url: (sut.session as! MockURLSession).fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
     func testTestAnswersToQuestionCallsQuestionApi() {
-        sut.session = sutMockUrlSession
         sut.downloadAnswersToQuestion(with: sutQuestionId)
         let urlElements = (sutHost, sutAnswerPath, ["order":"desc","sort":"activity","site":"stackoverflow"])
-        AssertEquivalent(url: sutMockUrlSession.fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
+        AssertEquivalent(url: (sut.session as! MockURLSession).fetchingUrl.first!, urlElements: urlElements, "A StackOverflowCommunicator shall build a URL for downloading a question with an ID.")
     }
 
     func testSearchingForQuestionsCallsDataTaskResume() {
-        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: sutQueryTag)
-        XCTAssertTrue(sutMockUrlSession.dataTask!.resumeCalled, "A StackOverflowCommunicator shall call the data task resume method")
+        XCTAssertTrue((sut.session as! MockURLSession).dataTask!.resumeCalled, "A StackOverflowCommunicator shall call the data task resume method")
     }
 
     func testMakingSecondRequestCancelsFirstRequest() {
-        sut.session = sutMockUrlSession
         sut.searchForQuestions(with: sutQueryTag)
-        let firstDataTask = sutMockUrlSession.dataTask
+        let firstDataTask = (sut.session as! MockURLSession).dataTask
         sut.downloadInformationForQuestion(with: sutQuestionId)
         XCTAssertTrue(firstDataTask!.cancelCalled, "A StackOverflowCommunicator shall cancel a request if a second request is made.")
     }
 
     func testCompletingTaskCancelsTask() {
         sut.session = sutDelegateUrlSession
-        let dataTask = MockDataTask()
-        sut.dataTask = dataTask
-        sut.urlSession(sutDelegateUrlSession, task: dataTask, didCompleteWithError: nil)
-        XCTAssertTrue(dataTask.cancelCalled, "A StackOverflowCommunicator shall cancel a request when it is completed.")
+        // Capture data task befored it is set nil in sut.urlSession(_:task:didCompleteWithError)
+        let dataTaskUsed = sut.dataTask
+        sut.urlSession(sutDelegateUrlSession, task: sut.dataTask!, didCompleteWithError: nil)
+        XCTAssertTrue((dataTaskUsed as! MockDataTask).cancelCalled, "A StackOverflowCommunicator shall cancel a request when it is completed.")
     }
 
     func testDataTaskIsSetToNilWhenSessionCompleted() {
         sut.session = sutDelegateUrlSession
-        sut.dataTask = MockDataTask()
         sut.urlSession(sutDelegateUrlSession, task: sut.dataTask!, didCompleteWithError: nil)
         XCTAssertNil(sut.dataTask, "A StackOverflowCommunicator shall set the data task to nil when it is completed.")
     }
 
     func testReceiving404ResponseToTopicSearchPassesErrorToDelegate() {
-        let communicator = ErrorInsertingStackOverflowCommunicator()
-        communicator.session = sutDelegateUrlSession
-        communicator.delegate = MockStackOverflowManager()
-        communicator.searchForQuestions(with: sutQueryTag)
-        let manager = communicator.delegate as? MockStackOverflowManager
+        errorSut.searchForQuestions(with: sutQueryTag)
+        let manager = errorSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.topicFailureErrorCode, sutErrorFourOhFour, "A StackOverflowCommunicator shall pass search errors to its delegate.")
     }
 
     func testReceiving404ResponseToQuestionBodyRequestPassesErrorToDelegate() {
-        let communicator = ErrorInsertingStackOverflowCommunicator()
-        communicator.session = sutDelegateUrlSession
-        communicator.delegate = MockStackOverflowManager()
-        communicator.downloadInformationForQuestion(with: sutQuestionId)
-        let manager = communicator.delegate as? MockStackOverflowManager
+        errorSut.downloadInformationForQuestion(with: sutQuestionId)
+        let manager = errorSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.bodyFailureErrorCode, sutErrorFourOhFour, "A StackOverflowCommunicator shall pass question body errors to its delegate.")
     }
 
     func testReceiving404ResponseToAnswerRequestPassesErrorToDelegate() {
-        let communicator = ErrorInsertingStackOverflowCommunicator()
-        communicator.session = sutDelegateUrlSession
-        communicator.delegate = MockStackOverflowManager()
-        communicator.downloadAnswersToQuestion(with: sutQuestionId)
-        let manager = communicator.delegate as? MockStackOverflowManager
+        errorSut.downloadAnswersToQuestion(with: sutQuestionId)
+        let manager = errorSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.answerFailureErrorCode, sutErrorFourOhFour, "A StackOverflowCommunicator shall pass answer request errors to its delegate.")
     }
 
     func testSessionErrorToTopicSearchIsPassedToDelegate () {
-        let communicator = ErrorInsertingStackOverflowCommunicator()
-        communicator.session = sutDelegateUrlSession
-        communicator.delegate = MockStackOverflowManager()
-        communicator.sessionError = TestError.test
-        communicator.searchForQuestions(with: sutQueryTag)
-        let manager = communicator.delegate as? MockStackOverflowManager
+        errorSut.sessionError = TestError.test
+        errorSut.searchForQuestions(with: sutQueryTag)
+        let manager = errorSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.topicFailureErrorCode, sutErrorNineOhNine, "A StackOverflowCommunicator shall pass search session error to its delegate.")
     }
 
     func testSessionErrorToQuestionBodyRequesIsPassedToDelegate() {
-        let communicator = ErrorInsertingStackOverflowCommunicator()
-        communicator.session = sutDelegateUrlSession
-        communicator.delegate = MockStackOverflowManager()
-        communicator.sessionError = TestError.test
-        communicator.downloadInformationForQuestion(with: sutQuestionId)
-        let manager = communicator.delegate as? MockStackOverflowManager
+        errorSut.sessionError = TestError.test
+        errorSut.downloadInformationForQuestion(with: sutQuestionId)
+        let manager = errorSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.bodyFailureErrorCode, sutErrorNineOhNine, "A StackOverflowCommunicator shall pass question body session error to its delegate.")
     }
 
     func testSessionErrorToAnserRequesIsPassedToDelegate() {
-        let communicator = ErrorInsertingStackOverflowCommunicator()
-        communicator.session = sutDelegateUrlSession
-        communicator.delegate = MockStackOverflowManager()
-        communicator.sessionError = TestError.test
-        communicator.downloadAnswersToQuestion(with: sutQuestionId)
-        let manager = communicator.delegate as? MockStackOverflowManager
+        errorSut.sessionError = TestError.test
+        errorSut.downloadAnswersToQuestion(with: sutQuestionId)
+        let manager = errorSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.answerFailureErrorCode, sutErrorNineOhNine, "A StackOverflowCommunicator shall pass answer request session error to its delegate.")
     }
 
     func testSuccessfulQuestionSearchPassesDataToDelegate() {
-        let sut = DataInsertingStackOverflowCommunicator()
-        sut.session = sutDelegateUrlSession
-        sut.delegate = MockStackOverflowManager()
         let dataToSend = "Topic Search String".data(using: .utf8)!
         let dataTask = MockDataTask()
-        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
-        sut.searchForQuestions(with: sutQueryTag)
-        let manager = sut.delegate as? MockStackOverflowManager
+        dataSut.urlSession(dataSut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        dataSut.searchForQuestions(with: sutQueryTag)
+        let manager = dataSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.topicSearchString, "Topic Search String")
     }
 
     func testSuccessfulBodyFetchPassesDataToDelegate() {
-        let sut = DataInsertingStackOverflowCommunicator()
-        sut.session = sutDelegateUrlSession
-        sut.delegate = MockStackOverflowManager()
         let dataToSend = "Topic Search String".data(using: .utf8)!
         let dataTask = MockDataTask()
-        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
-        sut.downloadInformationForQuestion(with: sutQuestionId)
-        let manager = sut.delegate as? MockStackOverflowManager
+        dataSut.urlSession(dataSut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        dataSut.downloadInformationForQuestion(with: sutQuestionId)
+        let manager = dataSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.bodySearchString, "Topic Search String")
     }
 
     func testSuccessfulAnswerFetchPassesDataToDelegate() {
-        let sut = DataInsertingStackOverflowCommunicator()
-        sut.session = sutDelegateUrlSession
-        sut.delegate = MockStackOverflowManager()
         let dataToSend = "Answers to Question".data(using: .utf8)!
         let dataTask = MockDataTask()
-        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
-        sut.downloadAnswersToQuestion(with: sutQuestionId)
-        let manager = sut.delegate as? MockStackOverflowManager
+        dataSut.urlSession(dataSut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        dataSut.downloadAnswersToQuestion(with: sutQuestionId)
+        let manager = dataSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.answerSearchString, "Answers to Question")
     }
 
     func testAdditionalDataAppendedToDownload() {
-        let sut = DataInsertingStackOverflowCommunicator()
-        sut.session = sutDelegateUrlSession
-        sut.delegate = MockStackOverflowManager()
         var dataToSend = "Answers to Question".data(using: .utf8)!
         let dataTask = MockDataTask()
-        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        dataSut.urlSession(dataSut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
         dataToSend = ", which you have asked.".data(using: .utf8)!
-        sut.urlSession(sut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
-        sut.downloadAnswersToQuestion(with: sutQuestionId)
-        let manager = sut.delegate as? MockStackOverflowManager
+        dataSut.urlSession(dataSut.session as! URLSession, dataTask: dataTask, didReceive: dataToSend)
+        dataSut.downloadAnswersToQuestion(with: sutQuestionId)
+        let manager = dataSut.delegate as? MockStackOverflowManager
         XCTAssertEqual(manager?.answerSearchString, "Answers to Question, which you have asked.")
     }
 }
