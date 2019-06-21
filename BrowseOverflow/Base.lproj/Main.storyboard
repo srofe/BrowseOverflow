@@ -33,10 +33,12 @@
                         <viewLayoutGuide key="safeArea" id="Ser-SA-uUd"/>
                     </view>
                     <connections>
+                        <outlet property="dataProvider" destination="noB-JF-2DF" id="AS2-0u-OK0"/>
                         <outlet property="tableView" destination="qVa-tF-qGu" id="mOK-Ho-8vo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nHk-zj-4xO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="noB-JF-2DF" customClass="TopicDataProvider" customModule="BrowseOverflow" customModuleProvider="target"/>
             </objects>
             <point key="canvasLocation" x="-200.00000000000003" y="-370.3125"/>
         </scene>
