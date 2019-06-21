@@ -37,4 +37,17 @@ class BrowseOverflowViewControllerTests: XCTestCase {
     func testViewControllerHasDelegateProperty() {
         XCTAssertTrue(sut.tableView.delegate is TopicDataProvider, "The table view delegate shall be a TopicDataProvider.")
     }
+
+    func testOneTableRowForOneTopicInDataProvider() {
+        let dataSource = TopicDataProvider()
+        dataSource.topics.append(Topic(name: "iPhone", tag: "iphone"))
+        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 1)
+    }
+
+    func testTwoTableRowsForTwoTopicsInDataProvider() {
+        let dataSource = TopicDataProvider()
+        dataSource.topics.append(Topic(name: "iPhone", tag: "iphone"))
+        dataSource.topics.append(Topic(name: "macOS", tag: "macos"))
+        XCTAssertEqual(dataSource.tableView(sut.tableView, numberOfRowsInSection: 0), 2)
+    }
 }
