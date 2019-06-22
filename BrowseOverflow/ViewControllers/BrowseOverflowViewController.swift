@@ -10,7 +10,7 @@ import UIKit
 
 class BrowseOverflowViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var dataProvider: TopicDataProvider!
+    @IBOutlet weak var dataProvider: (UITableViewDataSource & UITableViewDelegate)!
 
     override func viewDidLoad() {
         super.viewDidLoad()
