@@ -41,6 +41,10 @@ class BrowseOverflowViewControllerTests: XCTestCase {
         XCTAssertTrue(sut.tableView.delegate is TopicDataProvider, "The table view delegate shall be a TopicDataProvider.")
     }
 
+    func testDataSourceAndDelegateAreTheSame() {
+        XCTAssertEqual(sut.tableView.dataSource as? TopicDataProvider, sut.tableView.delegate as? TopicDataProvider, "The data source and delegate shall be the same object.")
+    }
+
     func testOneTableRowForOneTopicInDataProvider() {
         sutDataProvider.topics.append(Topic(name: "iPhone", tag: "iphone"))
         XCTAssertEqual(sutDataProvider.tableView(sut.tableView, numberOfRowsInSection: 0), 1, "The table view shall have the same number of rows as there are topics.")
